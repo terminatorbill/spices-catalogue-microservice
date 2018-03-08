@@ -3,10 +3,9 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/spices-application/api/spices-api.iml" filepath="$PROJECT_DIR$/spices-application/api/spices-api.iml" />
-      <module fileurl="file://$PROJECT_DIR$/spices-application/spices-application.iml" filepath="$PROJECT_DIR$/spices-application/spices-application.iml" />
       <module fileurl="file://$PROJECT_DIR$/spices-catalogue-microservice.iml" filepath="$PROJECT_DIR$/spices-catalogue-microservice.iml" />
       <module fileurl="file://$PROJECT_DIR$/spices-application/runtime/spices-runtime.iml" filepath="$PROJECT_DIR$/spices-application/runtime/spices-runtime.iml" />
-      <module fileurl="file://$PROJECT_DIR$/spices-application/web/spices-web.iml" filepath="$PROJECT_DIR$/spices-application/web/spices-web.iml" />
+      <module fileurl="file://$PROJECT_DIR$/spices-application/web/web.iml" filepath="$PROJECT_DIR$/spices-application/web/web.iml" />
     </modules>
   </component>
 </project>
