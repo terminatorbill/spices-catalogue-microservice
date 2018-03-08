@@ -6,11 +6,18 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="spices-catalogue-microservice" />
+        <module name="spices-api" />
+        <module name="spices-application" />
+        <module name="spices-runtime" />
+        <module name="spices-web" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
+      <module name="spices-api" target="1.5" />
+      <module name="spices-application" target="1.5" />
       <module name="spices-catalogue-microservice" target="1.8" />
+      <module name="spices-runtime" target="1.8" />
+      <module name="spices-web" target="1.8" />
     </bytecodeTargetLevel>
   </component>
 </project>
