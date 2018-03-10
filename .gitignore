@@ -4,4 +4,5 @@ target/
 *.iml
 *.class
 out/
+spices-application/web/dependency-reduced-pom.xml
 !/.gitignore
