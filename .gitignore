@@ -2,6 +2,7 @@
 target/
 /*/dependency-reduced-pom.xml
 *.iml
+.idea/workspace.xml
 *.class
 out/
 spices-application/web/dependency-reduced-pom.xml
