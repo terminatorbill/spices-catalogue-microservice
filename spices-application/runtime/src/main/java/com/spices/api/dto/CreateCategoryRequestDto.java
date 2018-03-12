@@ -39,4 +39,24 @@ public class CreateCategoryRequestDto {
     public List<CreateCategoryRequestDto> getSubCategories() {
         return subCategories;
     }
+
+    public void setParentCategoryId(Long parentCategoryId) {
+        this.parentCategoryId = parentCategoryId;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setProducts(List<ProductDto> products) {
+        this.products = products;
+    }
+
+    public void setSubCategories(List<CreateCategoryRequestDto> subCategories) {
+        this.subCategories = subCategories;
+    }
 }

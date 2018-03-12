@@ -31,4 +31,20 @@ public class ImageDto {
     public String getCaption() {
         return caption;
     }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setFormat(String format) {
+        this.format = format;
+    }
+
+    public void setCaption(String caption) {
+        this.caption = caption;
+    }
 }

@@ -21,6 +21,10 @@
             <groupId>com.google.inject</groupId>
             <artifactId>guice</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+        </dependency>
     </dependencies>
     <packaging>pom</packaging>
 
@@ -36,6 +40,7 @@
         <guice.version>4.1.0</guice.version>
         <dropwizard.guice.version>1.0.6.0</dropwizard.guice.version>
         <guava.version>23.0</guava.version>
+        <logback.version>1.2.3</logback.version>
     </properties>
 
     <modules>
@@ -62,6 +67,11 @@
                 <groupId>com.hubspot.dropwizard</groupId>
                 <artifactId>dropwizard-guice</artifactId>
                 <version>${dropwizard.guice.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>ch.qos.logback</groupId>
+                <artifactId>logback-core</artifactId>
+                <version>${logback.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.hibernate</groupId>

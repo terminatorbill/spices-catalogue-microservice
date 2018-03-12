@@ -41,4 +41,24 @@ public class ProductDto {
     public MediaDto getMediaDto() {
         return mediaDto;
     }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setCategories(List<Long> categories) {
+        this.categories = categories;
+    }
+
+    public void setPrice(Long price) {
+        this.price = price;
+    }
+
+    public void setMediaDto(MediaDto mediaDto) {
+        this.mediaDto = mediaDto;
+    }
 }

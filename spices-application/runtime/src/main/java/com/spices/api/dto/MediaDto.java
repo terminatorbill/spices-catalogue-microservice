@@ -21,4 +21,12 @@ public class MediaDto {
     public List<VideoDto> getVideos() {
         return videos;
     }
+
+    public void setImages(List<ImageDto> images) {
+        this.images = images;
+    }
+
+    public void setVideos(List<VideoDto> videos) {
+        this.videos = videos;
+    }
 }

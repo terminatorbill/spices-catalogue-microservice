@@ -9,3 +9,4 @@ out/
 /*/dependency-reduced-pom.xml
 spices-application/web/dependency-reduced-pom.xml
 !/.gitignore
+/.idea/workspace.xml

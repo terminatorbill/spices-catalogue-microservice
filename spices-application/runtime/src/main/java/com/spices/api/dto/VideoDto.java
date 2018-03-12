@@ -25,4 +25,16 @@ public class VideoDto {
     public String getFormat() {
         return format;
     }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setFormat(String format) {
+        this.format = format;
+    }
 }
