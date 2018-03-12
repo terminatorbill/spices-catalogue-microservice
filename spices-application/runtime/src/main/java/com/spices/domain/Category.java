@@ -4,13 +4,15 @@ import java.util.List;
 
 public class Category {
     private final Long id;
+    private final Long parentCategoryId;
     private final String name;
     private final String description;
     private final List<Product> products;
     private final List<Category> subCategories;
 
-    public Category(Long id, String name, String description, List<Product> products, List<Category> subCategories) {
+    public Category(Long id, Long parentCategoryId, String name, String description, List<Product> products, List<Category> subCategories) {
         this.id = id;
+        this.parentCategoryId = parentCategoryId;
         this.name = name;
         this.description = description;
         this.products = products;
@@ -19,6 +21,10 @@ public class Category {
 
     public Long getId() {
         return id;
+    }
+
+    public Long getParentCategoryId() {
+        return parentCategoryId;
     }
 
     public String getName() {
