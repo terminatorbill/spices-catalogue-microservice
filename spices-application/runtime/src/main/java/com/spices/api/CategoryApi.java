@@ -1,7 +1,8 @@
 package com.spices.api;
 
 import com.google.inject.Inject;
-import com.spices.api.dto.CreateCategoryRequestDto;
+import com.spices.api.converter.CategoryCreationRequestToCategoryConverter;
+import com.spices.api.dto.CategoryCreationRequestDto;
 import com.spices.service.CategoryService;
 
 import javax.ws.rs.Consumes;
@@ -17,14 +18,17 @@ import javax.ws.rs.core.Response;
 public class CategoryApi {
 
     private final CategoryService categoryService;
+    private final CategoryCreationRequestToCategoryConverter toCategoryConverter;
 
     @Inject
-    CategoryApi(CategoryService categoryService) {
+    CategoryApi(CategoryService categoryService, CategoryCreationRequestToCategoryConverter toCategoryConverter) {
         this.categoryService = categoryService;
+        this.toCategoryConverter = toCategoryConverter;
     }
 
     @POST
-    public Response addCategory(CreateCategoryRequestDto createCategoryRequestDto) {
+    public Response createCategory(CategoryCreationRequestDto categoryCreationRequestDto) {
+        categoryService.createCategory(toCategoryConverter.convert(categoryCreationRequestDto));
         return Response.status(Response.Status.CREATED).build();
     }
 }

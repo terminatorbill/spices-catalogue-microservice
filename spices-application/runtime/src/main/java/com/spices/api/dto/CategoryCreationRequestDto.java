@@ -2,17 +2,17 @@ package com.spices.api.dto;
 
 import java.util.List;
 
-public class CreateCategoryRequestDto {
+public class CategoryCreationRequestDto {
     private Long parentCategoryId;
     private String name;
     private String description;
     private List<ProductDto> products;
-    private List<CreateCategoryRequestDto> subCategories;
+    private List<CategoryCreationRequestDto> subCategories;
 
-    public CreateCategoryRequestDto() {
+    public CategoryCreationRequestDto() {
     }
 
-    public CreateCategoryRequestDto(Long parentCategoryId, String name, String description, List<ProductDto> products, List<CreateCategoryRequestDto> subCategories) {
+    public CategoryCreationRequestDto(Long parentCategoryId, String name, String description, List<ProductDto> products, List<CategoryCreationRequestDto> subCategories) {
         this.parentCategoryId = parentCategoryId;
         this.name = name;
         this.description = description;
@@ -36,7 +36,7 @@ public class CreateCategoryRequestDto {
         return products;
     }
 
-    public List<CreateCategoryRequestDto> getSubCategories() {
+    public List<CategoryCreationRequestDto> getSubCategories() {
         return subCategories;
     }
 
@@ -56,7 +56,7 @@ public class CreateCategoryRequestDto {
         this.products = products;
     }
 
-    public void setSubCategories(List<CreateCategoryRequestDto> subCategories) {
+    public void setSubCategories(List<CategoryCreationRequestDto> subCategories) {
         this.subCategories = subCategories;
     }
 }
