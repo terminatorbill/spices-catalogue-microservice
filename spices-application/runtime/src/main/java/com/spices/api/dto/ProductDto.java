@@ -1,7 +1,5 @@
 package com.spices.api.dto;
 
-import com.spices.domain.Media;
-
 import java.util.List;
 
 public class ProductDto {
