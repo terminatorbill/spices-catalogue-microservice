@@ -18,7 +18,7 @@
       <module name="runtime" target="1.8" />
       <module name="spices-api" target="1.8" />
       <module name="spices-application" target="1.8" />
-      <module name="spices-catalogue-microservice" target="1.5" />
+      <module name="spices-catalogue-microservice" target="1.8" />
       <module name="spices-runtime" target="1.8" />
       <module name="spices-web" target="1.8" />
       <module name="web" target="1.8" />
