@@ -1,8 +1,11 @@
-.*
-target/
-/*/dependency-reduced-pom.xml
 *.iml
-*.class
+*.ipr
+*.iws
+.idea/**
+*.orig
+build/
+target/
 out/
+/*/dependency-reduced-pom.xml
 spices-application/web/dependency-reduced-pom.xml
 !/.gitignore
