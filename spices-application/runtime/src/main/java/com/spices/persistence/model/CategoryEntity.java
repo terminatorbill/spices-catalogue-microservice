@@ -1,5 +1,8 @@
 package com.spices.persistence.model;
 
+import com.google.common.collect.Sets;
+import com.spices.domain.Product;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -7,10 +10,12 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Table(name = "category")
@@ -31,6 +36,9 @@ public class CategoryEntity {
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "parent_category_id")
     private CategoryEntity parentCategory;
+
+    @ManyToMany(mappedBy = "categories")
+    private Set<ProductEntity> products = Sets.newHashSet();
 
     public CategoryEntity() {
     }
@@ -65,6 +73,20 @@ public class CategoryEntity {
 
     public void setParentCategory(CategoryEntity parentCategory) {
         this.parentCategory = parentCategory;
+    }
+
+    public Set<ProductEntity> getProducts() {
+        return products;
+    }
+
+    public void addProduct(ProductEntity product) {
+        products.add(product);
+        product.getCategories().add(this);
+    }
+
+    public void removeProduct(ProductEntity product) {
+        products.remove(product);
+        product.getCategories().remove(this);
     }
 
     @Override
