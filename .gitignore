@@ -1,7 +1,7 @@
-.*
 *.iml
 *.ipr
 *.iws
+.idea/**
 *.orig
 build/
 target/
@@ -9,4 +9,3 @@ out/
 /*/dependency-reduced-pom.xml
 spices-application/web/dependency-reduced-pom.xml
 !/.gitignore
-/.idea/workspace.xml
