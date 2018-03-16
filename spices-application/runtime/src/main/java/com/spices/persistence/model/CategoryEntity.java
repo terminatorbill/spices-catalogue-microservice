@@ -1,7 +1,6 @@
 package com.spices.persistence.model;
 
 import com.google.common.collect.Sets;
-import com.spices.domain.Product;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
