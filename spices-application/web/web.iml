@@ -8,7 +8,7 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="Maven: com.spices.catalogue:api:1.0-SNAPSHOT" level="project" />
+    <orderEntry type="module" module-name="api" />
     <orderEntry type="library" name="Maven: io.dropwizard:dropwizard-core:1.2.4" level="project" />
     <orderEntry type="library" name="Maven: io.dropwizard:dropwizard-util:1.2.4" level="project" />
     <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-annotations:2.9.0" level="project" />
@@ -110,7 +110,7 @@
     <orderEntry type="library" name="Maven: com.experlog:xapool:1.5.0" level="project" />
     <orderEntry type="library" name="Maven: log4j:log4j:1.2.17" level="project" />
     <orderEntry type="library" name="Maven: org.jboss.jbossts:jbossjta:4.16.4.Final" level="project" />
-    <orderEntry type="library" name="Maven: com.spices.catalogue:runtime:1.0-SNAPSHOT" level="project" />
+    <orderEntry type="module" module-name="runtime" />
     <orderEntry type="library" name="Maven: ch.qos.logback:logback-core:1.2.3" level="project" />
     <orderEntry type="library" name="Maven: com.google.guava:guava:23.0" level="project" />
     <orderEntry type="library" name="Maven: com.google.code.findbugs:jsr305:3.0.2" level="project" />
