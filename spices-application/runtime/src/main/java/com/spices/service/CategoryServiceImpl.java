@@ -5,7 +5,7 @@ import com.spices.domain.Category;
 
 import javax.inject.Inject;
 
-class CategoryServiceImpl implements CategoryService {
+public class CategoryServiceImpl implements CategoryService {
 
     private final CategoryRepository categoryRepository;
 
