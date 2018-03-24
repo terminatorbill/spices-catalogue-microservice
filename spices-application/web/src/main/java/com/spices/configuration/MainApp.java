@@ -4,33 +4,32 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.inject.Guice;
-import com.hubspot.dropwizard.guice.GuiceBundle;
 import com.spices.api.CategoryApi;
 import com.spices.api.exceptionmapper.CategoryAlreadyExistsExceptionMapper;
 import com.spices.api.exceptionmapper.GenericExceptionMapper;
 import com.spices.modules.AppModule;
 
 import io.dropwizard.Application;
-import io.dropwizard.Configuration;
+import io.dropwizard.configuration.ResourceConfigurationSourceProvider;
 import io.dropwizard.jersey.jackson.JsonProcessingExceptionMapper;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
+import ru.vyarus.dropwizard.guice.GuiceBundle;
 
-public class MainApp extends Application<Configuration> {
+public class MainApp extends Application<AppConfiguration> {
 
     private static final Logger LOG = LoggerFactory.getLogger(MainApp.class);
 
     @Override
-    public void initialize(Bootstrap<Configuration> bootstrap) {
-        GuiceBundle<Configuration> guiceBundle = GuiceBundle.newBuilder()
-            .addModule(new AppModule())
-            .setConfigClass(Configuration.class)
-            .build();
-        bootstrap.addBundle(guiceBundle);
+    public void initialize(Bootstrap<AppConfiguration> bootstrap) {
+        //JerseyGuiceUtils.reset();
+        bootstrap.setConfigurationSourceProvider(new ResourceConfigurationSourceProvider());
+
+        bootstrap.addBundle(GuiceBundle.builder().modules(new AppModule()).build());
     }
 
     @Override
-    public void run(Configuration configuration, Environment environment) {
+    public void run(AppConfiguration configuration, Environment environment) {
         Guice.createInjector(new AppModule());
 
         LOG.info("Registering REST resource classes");

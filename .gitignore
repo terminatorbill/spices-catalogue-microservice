@@ -3,6 +3,7 @@
 *.iws
 .idea/**
 *.orig
+/tmp
 build/
 target/
 out/
