@@ -33,7 +33,7 @@
             <configuration>
               <transformers>
                 <transformer>
-                  <mainClass>com.owiwi.configuration.MainApp</mainClass>
+                  <mainClass>com.spices.configuration.MainApp</mainClass>
                 </transformer>
                 <transformer />
               </transformers>
