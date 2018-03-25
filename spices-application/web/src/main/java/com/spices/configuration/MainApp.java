@@ -3,11 +3,11 @@ package com.spices.configuration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.inject.Guice;
 import com.spices.api.CategoryApi;
 import com.spices.api.exceptionmapper.CategoryAlreadyExistsExceptionMapper;
 import com.spices.api.exceptionmapper.GenericExceptionMapper;
 import com.spices.modules.AppModule;
+import com.spices.modules.PersistentModule;
 
 import io.dropwizard.Application;
 import io.dropwizard.configuration.ResourceConfigurationSourceProvider;
@@ -22,16 +22,16 @@ public class MainApp extends Application<AppConfiguration> {
 
     @Override
     public void initialize(Bootstrap<AppConfiguration> bootstrap) {
-        //JerseyGuiceUtils.reset();
         bootstrap.setConfigurationSourceProvider(new ResourceConfigurationSourceProvider());
 
-        bootstrap.addBundle(GuiceBundle.builder().modules(new AppModule()).build());
+        bootstrap.addBundle(
+            GuiceBundle.builder()
+                .modules(new AppModule(), new PersistentModule())
+            .build());
     }
 
     @Override
     public void run(AppConfiguration configuration, Environment environment) {
-        Guice.createInjector(new AppModule());
-
         LOG.info("Registering REST resource classes");
         environment.jersey().getResourceConfig().register(CategoryApi.class);
         environment.jersey().getResourceConfig().register(CategoryAlreadyExistsExceptionMapper.class);

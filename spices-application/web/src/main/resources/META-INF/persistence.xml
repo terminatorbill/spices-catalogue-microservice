@@ -9,8 +9,8 @@
         <properties>
             <property name="javax.persistence.jdbc.driver" value="org.postgresql.Driver" /> <!-- DB Driver -->
             <property name="javax.persistence.jdbc.url" value="jdbc:postgresql://localhost/catalogue" /> <!-- DB Name -->
-            <property name="javax.persistence.jdbc.user" value="postgres" /> <!-- DB User -->
-            <property name="javax.persistence.jdbc.password" value="postgres" /> <!-- DB Password -->
+            <property name="javax.persistence.jdbc.user" value="spices" /> <!-- DB User -->
+            <property name="javax.persistence.jdbc.password" value="spices" /> <!-- DB Password -->
 
             <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQL95Dialect"/> <!-- DB Dialect -->
             <property name="hibernate.hbm2ddl.auto" value="create-drop" /> <!-- create / create-drop / update -->
