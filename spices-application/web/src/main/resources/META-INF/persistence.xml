@@ -17,6 +17,9 @@
 
             <property name="hibernate.show_sql" value="true" /> <!-- Show SQL in console -->
             <property name="hibernate.format_sql" value="true" /> <!-- Show SQL formatted -->
+            <!--<property name="hibernate.order_updates" value="true"/>
+            <property name="hibernate.order_inserts" value="true"/>-->
+            <property name="org.hibernate.flushMode" value="COMMIT"/>
         </properties>
 
     </persistence-unit>

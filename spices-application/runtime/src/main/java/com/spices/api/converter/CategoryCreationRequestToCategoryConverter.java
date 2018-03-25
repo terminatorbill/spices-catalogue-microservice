@@ -1,5 +1,9 @@
 package com.spices.api.converter;
 
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import com.spices.api.dto.CategoryCreationRequestDto;
 import com.spices.api.dto.ImageDto;
 import com.spices.api.dto.MediaDto;
@@ -11,9 +15,6 @@ import com.spices.domain.Media;
 import com.spices.domain.Product;
 import com.spices.domain.Video;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 public class CategoryCreationRequestToCategoryConverter {
 
     public Category convert(CategoryCreationRequestDto categoryCreationRequestDto) {
@@ -22,16 +23,9 @@ public class CategoryCreationRequestToCategoryConverter {
             categoryCreationRequestDto.getParentCategoryId(),
             categoryCreationRequestDto.getName(),
             categoryCreationRequestDto.getDescription(),
-            getProducts(categoryCreationRequestDto.getProducts()),
+                Collections.emptyList(),
             getSubCategories(categoryCreationRequestDto.getSubCategories())
         );
-    }
-
-    private List<Product> getProducts(List<ProductDto> productDtos) {
-        return productDtos.stream()
-            .map(CategoryCreationRequestToCategoryConverter::getProduct)
-            .collect(Collectors.toList());
-
     }
 
     private List<Category> getSubCategories(List<CategoryCreationRequestDto> subCategories) {
