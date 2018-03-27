@@ -1,24 +1,21 @@
 package com.spices.service;
 
-import com.google.inject.persist.Transactional;
-import com.spices.persistence.repository.CategoryRepository;
-import com.spices.domain.Category;
-
 import javax.inject.Inject;
+
+import com.spices.domain.Category;
+import com.spices.persistence.repository.CategoryRepositoryFacade;
 
 public class CategoryServiceImpl implements CategoryService {
 
-    private final CategoryRepository categoryRepository;
+    private final CategoryRepositoryFacade categoryRepositoryFacade;
 
     @Inject
-    CategoryServiceImpl(CategoryRepository categoryRepository) {
-
-        this.categoryRepository = categoryRepository;
+    CategoryServiceImpl(CategoryRepositoryFacade categoryRepositoryFacade) {
+        this.categoryRepositoryFacade = categoryRepositoryFacade;
     }
 
     @Override
-    @Transactional
     public void createCategory(Category category) {
-        categoryRepository.createCategory(category);
+        categoryRepositoryFacade.createCategory(category);
     }
 }

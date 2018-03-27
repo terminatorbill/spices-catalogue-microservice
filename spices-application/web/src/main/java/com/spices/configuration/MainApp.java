@@ -8,6 +8,7 @@ import com.spices.api.exceptionmapper.CategoryAlreadyExistsExceptionMapper;
 import com.spices.api.exceptionmapper.GenericExceptionMapper;
 import com.spices.modules.AppModule;
 import com.spices.modules.PersistentModule;
+import com.spices.persistence.configuration.EntityManagerProvider;
 
 import io.dropwizard.Application;
 import io.dropwizard.configuration.ResourceConfigurationSourceProvider;
@@ -37,6 +38,7 @@ public class MainApp extends Application<AppConfiguration> {
         environment.jersey().getResourceConfig().register(CategoryAlreadyExistsExceptionMapper.class);
         environment.jersey().getResourceConfig().register(GenericExceptionMapper.class);
         environment.jersey().register(new JsonProcessingExceptionMapper(true));
+        environment.lifecycle().manage(new EntityManagerFactoryConfigurer(EntityManagerProvider.ENTITY_MANAGER_FACTORY));
     }
 
     public static void main(String[] args) throws Exception {
