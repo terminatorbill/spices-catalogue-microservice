@@ -4,5 +4,5 @@ import com.spices.domain.Category;
 
 public interface CategoryService {
 
-    void createCategory(Category convert);
+    void createCategory(Category category);
 }
