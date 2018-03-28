@@ -12,7 +12,7 @@ import org.mockito.Mockito;
 import com.spices.domain.Category;
 import com.spices.persistence.repository.CategoryRepositoryFacade;
 
-public class CategoryServiceImplTests {
+public class CategoryServiceImplTest {
     private final CategoryRepositoryFacade categoryRepositoryFacade = Mockito.mock(CategoryRepositoryFacade.class);
     private final CategoryService categoryService = new CategoryServiceImpl(categoryRepositoryFacade);
 

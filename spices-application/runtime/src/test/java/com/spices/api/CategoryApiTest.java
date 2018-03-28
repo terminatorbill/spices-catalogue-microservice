@@ -22,7 +22,7 @@ import com.spices.api.dto.CategoryCreationRequestDto;
 import com.spices.domain.Category;
 import com.spices.service.CategoryService;
 
-public class CategoryApiTests {
+public class CategoryApiTest {
     private final CategoryService categoryService = Mockito.mock(CategoryService.class);
     private final CategoryCreationRequestToCategoryConverter toCategoryConverter = new CategoryCreationRequestToCategoryConverter();
     private final CategoryApi categoryApi = new CategoryApi(categoryService, toCategoryConverter);

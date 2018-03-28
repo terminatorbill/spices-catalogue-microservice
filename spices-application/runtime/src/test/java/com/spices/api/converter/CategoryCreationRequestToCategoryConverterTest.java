@@ -15,7 +15,7 @@ import org.junit.jupiter.api.Test;
 import com.spices.api.dto.CategoryCreationRequestDto;
 import com.spices.domain.Category;
 
-public class CategoryCreationRequestToCategoryConverterTests {
+public class CategoryCreationRequestToCategoryConverterTest {
 
     private final CategoryCreationRequestToCategoryConverter toCategoryConverter = new CategoryCreationRequestToCategoryConverter();
 

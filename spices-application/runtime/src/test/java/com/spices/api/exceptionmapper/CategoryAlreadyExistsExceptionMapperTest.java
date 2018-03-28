@@ -14,7 +14,7 @@ import com.spices.api.dto.ErrorCodeDto;
 import com.spices.api.dto.ErrorDto;
 import com.spices.api.exception.CategoryAlreadyExistsException;
 
-public class CategoryAlreadyExistsExceptionMapperTests {
+public class CategoryAlreadyExistsExceptionMapperTest {
 
     @DisplayName("should return a 409 response with error code CATEGORY_ALREADY_EXISTS")
     @Test

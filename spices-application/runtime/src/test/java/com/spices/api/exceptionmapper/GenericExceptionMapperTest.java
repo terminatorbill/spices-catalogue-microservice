@@ -13,7 +13,7 @@ import com.spices.api.dto.ErrorCodeDto;
 import com.spices.api.dto.ErrorDto;
 import com.spices.api.exception.GenericException;
 
-public class GenericExceptionMapperTests {
+public class GenericExceptionMapperTest {
 
     @DisplayName("should return a Response 500 with error code GENERIC")
     @Test
