@@ -13,5 +13,7 @@ public class PersistentModule extends AbstractModule {
         bind(TransactionManager.class).in(Singleton.class);
         bind(CategoryRepositoryFacade.class).to(CategoryRepositoryFacadeImpl.class).in(Singleton.class);
         bind(EntityManagerProvider.class);
+
+        //Names.bindProperties();
     }
 }

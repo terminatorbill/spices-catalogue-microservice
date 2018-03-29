@@ -20,6 +20,7 @@ import ru.vyarus.dropwizard.guice.GuiceBundle;
 public class MainApp extends Application<AppConfiguration> {
 
     private static final Logger LOG = LoggerFactory.getLogger(MainApp.class);
+    private static final String PERSISTENCE_UNIT = "catalogueManager";
 
     @Override
     public void initialize(Bootstrap<AppConfiguration> bootstrap) {
@@ -38,7 +39,7 @@ public class MainApp extends Application<AppConfiguration> {
         environment.jersey().getResourceConfig().register(CategoryAlreadyExistsExceptionMapper.class);
         environment.jersey().getResourceConfig().register(GenericExceptionMapper.class);
         environment.jersey().register(new JsonProcessingExceptionMapper(true));
-        environment.lifecycle().manage(new EntityManagerFactoryConfigurer(EntityManagerProvider.ENTITY_MANAGER_FACTORY));
+        environment.lifecycle().manage(new EntityManagerProvider(PERSISTENCE_UNIT));
     }
 
     public static void main(String[] args) throws Exception {
