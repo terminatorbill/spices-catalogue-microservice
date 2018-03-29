@@ -5,7 +5,7 @@ import org.slf4j.LoggerFactory;
 
 import com.spices.api.CategoryApi;
 import com.spices.api.exceptionmapper.CategoryAlreadyExistsExceptionMapper;
-import com.spices.api.exceptionmapper.GenericExceptionMapper;
+import com.spices.exceptionmapper.GenericExceptionMapper;
 import com.spices.modules.AppModule;
 import com.spices.modules.PersistentModule;
 import com.spices.persistence.configuration.EntityManagerProvider;
