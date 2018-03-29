@@ -18,6 +18,14 @@ public class CategoryRepositoryImpl implements CategoryRepository {
         });
     }
 
+    @Override
+    public boolean checkIfCategoryExists(String name, EntityManager entityManager) {
+        int results = entityManager.createQuery("SELECT COUNT(c) FROM CategoryEntity c WHERE c.categoryName = :name", Integer.class)
+            .setParameter("name", name)
+            .getSingleResult();
+        return results != 0;
+    }
+
     private CategoryEntity createCategoryEntity(Category category, CategoryEntity parentCategory) {
         CategoryEntity categoryEntity = new CategoryEntity();
         categoryEntity.setCategoryDescription(category.getDescription());
