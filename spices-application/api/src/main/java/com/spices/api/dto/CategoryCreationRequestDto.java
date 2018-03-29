@@ -6,17 +6,15 @@ public class CategoryCreationRequestDto {
     private Long parentCategoryId;
     private String name;
     private String description;
-    private List<ProductDto> products;
     private List<CategoryCreationRequestDto> subCategories;
 
     public CategoryCreationRequestDto() {
     }
 
-    public CategoryCreationRequestDto(Long parentCategoryId, String name, String description, List<ProductDto> products, List<CategoryCreationRequestDto> subCategories) {
+    public CategoryCreationRequestDto(Long parentCategoryId, String name, String description, List<CategoryCreationRequestDto> subCategories) {
         this.parentCategoryId = parentCategoryId;
         this.name = name;
         this.description = description;
-        this.products = products;
         this.subCategories = subCategories;
     }
 
@@ -30,10 +28,6 @@ public class CategoryCreationRequestDto {
 
     public String getDescription() {
         return description;
-    }
-
-    public List<ProductDto> getProducts() {
-        return products;
     }
 
     public List<CategoryCreationRequestDto> getSubCategories() {
@@ -50,10 +44,6 @@ public class CategoryCreationRequestDto {
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public void setProducts(List<ProductDto> products) {
-        this.products = products;
     }
 
     public void setSubCategories(List<CategoryCreationRequestDto> subCategories) {
