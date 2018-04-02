@@ -22,8 +22,8 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     private void checkIfAnyCategoryExists(Category category) {
-        categoryRepositoryFacade.checkAndReturnAnyExistingCategory(category).ifPresent(categoryId -> {
-            throw new CategoryServiceException(categoryId, CategoryServiceException.Type.DUPLICATE_CATEGORY);
+        categoryRepositoryFacade.checkAndReturnAnyExistingCategory(category).ifPresent(categoryName -> {
+            throw new CategoryServiceException(categoryName, CategoryServiceException.Type.DUPLICATE_CATEGORY);
         });
     }
 }
