@@ -48,6 +48,7 @@
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
         <jdk.version>8</jdk.version>
+        <build.helper.maven.plugin>3.0.0</build.helper.maven.plugin>
     </properties>
 
     <modules>
@@ -163,6 +164,28 @@
         </dependencies>
     </dependencyManagement>
 
+    <profiles>
+        <profile>
+            <id>dev</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <build.profile.id>dev</build.profile.id>
+                <skip.integration.tests>true</skip.integration.tests>
+                <skip.unit.tests>false</skip.unit.tests>
+            </properties>
+        </profile>
+        <profile>
+            <id>integration-test</id>
+            <properties>
+                <build.profile.id>integration-test</build.profile.id>
+                <skip.integration.tests>false</skip.integration.tests>
+                <skip.unit.tests>true</skip.unit.tests>
+            </properties>
+        </profile>
+    </profiles>
+
     <build>
         <pluginManagement>
             <plugins>
@@ -208,28 +231,12 @@
                     <artifactId>maven-surefire-plugin</artifactId>
                     <version>2.19.1</version>
                     <configuration>
+                        <skipTests>${skip.unit.tests}</skipTests>
                         <excludes>
                             <exclude>**/*IntegrationTest.java</exclude>
                             <exclude>**/functional/**</exclude>
                         </excludes>
                     </configuration>
-                    <executions>
-                        <execution>
-                            <id>integration-test</id>
-                            <goals>
-                                <goal>test</goal>
-                            </goals>
-                            <phase>integration-test</phase>
-                            <configuration>
-                                <excludes>
-                                    <exclude>none</exclude>
-                                </excludes>
-                                <includes>
-                                    <include>**/*IntegrationTest.java</include>
-                                </includes>
-                            </configuration>
-                        </execution>
-                    </executions>
                     <dependencies>
                         <dependency>
                             <groupId>org.junit.jupiter</groupId>
@@ -242,6 +249,16 @@
                             <version>${junit.platform.version}</version>
                         </dependency>
                     </dependencies>
+                </plugin>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>build-helper-maven-plugin</artifactId>
+                    <version>${build.helper.maven.plugin}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-failsafe-plugin</artifactId>
+                    <version>2.21.0</version>
                 </plugin>
             </plugins>
         </pluginManagement>
