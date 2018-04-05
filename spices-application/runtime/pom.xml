@@ -41,6 +41,10 @@
             <artifactId>hibernate-testing</artifactId>
         </dependency>
         <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>
             <scope>test</scope>
@@ -88,6 +92,11 @@
         </filters>
         <sourceDirectory>src/main/java</sourceDirectory>
         <testSourceDirectory>src/test/java</testSourceDirectory>
+        <testResources>
+            <testResource>
+                <directory>src/integration-test/resources</directory>
+            </testResource>
+        </testResources>
         <resources>
             <resource>
                 <filtering>true</filtering>
@@ -99,6 +108,20 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>compile-integration-test</id>
+                        <phase>generate-test-sources</phase>
+                        <goals>
+                            <goal>testCompile</goal>
+                        </goals>
+                        <configuration>
+                            <testIncludes>
+                                <testInclude>**/*IntegrationTest.java</testInclude>
+                            </testIncludes>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -158,10 +181,12 @@
                         <configuration>
                             <environmentVariables>
                                 <!--suppress MavenModelInspection -->
-                                <it-database.port>${it-database.port}</it-database.port>
+                                <it-database.port>5432</it-database.port>
                             </environmentVariables>
+                            <testSourceDirectory>src/integration-test/java</testSourceDirectory>
+                            <testClassesDirectory>${project.basedir}/target/test-classes</testClassesDirectory>
                             <includes>**/*IntegrationTest.java</includes>
-                            <skipTests>${skip.integration.tests}</skipTests>
+                            <skipTests>false</skipTests>
                         </configuration>
                     </execution>
                 </executions>
@@ -169,35 +194,38 @@
             <plugin>
                 <groupId>io.fabric8</groupId>
                 <artifactId>docker-maven-plugin</artifactId>
-                <version>0.24.0</version>
+                <configuration>
+                    <images>
+                        <image>
+                            <name>postgres:10.3-alpine</name>
+                            <alias>it-database</alias>
+                            <run>
+                                <env>
+                                    <POSTGRES_PASSWORD>spices</POSTGRES_PASSWORD>
+                                    <POSTGRES_USER>spices</POSTGRES_USER>
+                                    <POSTGRES_DB>catalogue</POSTGRES_DB>
+                                </env>
+                                <ports>
+                                    <port>5432:5432</port>
+                                </ports>
+                                <wait>
+                                    <log>(?s)database system is ready to accept connections.*database system is ready to accept connections</log>
+                                    <time>20000</time>
+                                </wait>
+                            </run>
+                        </image>
+                    </images>
+                </configuration>
                 <executions>
                     <execution>
                         <id>prepare-it-database</id>
                         <phase>pre-integration-test</phase>
                         <goals>
+                            <goal>build</goal>
                             <goal>start</goal>
                         </goals>
                         <configuration>
-                            <images>
-                                <image>
-                                    <name>postgres:10.3-alpine</name>
-                                    <alias>it-database</alias>
-                                    <run>
-                                        <env>
-                                            <POSTGRES_PASSWORD>spices</POSTGRES_PASSWORD>
-                                            <POSTGRES_USER>spices</POSTGRES_USER>
-                                            <POSTGRES_DB>catalogue</POSTGRES_DB>
-                                        </env>
-                                        <ports>
-                                            <port>it-database.port:5432</port>
-                                        </ports>
-                                        <wait>
-                                            <log>(?s)database system is ready to accept connections.*database system is ready to accept connections</log>
-                                            <time>20000</time>
-                                        </wait>
-                                    </run>
-                                </image>
-                            </images>
+                            <skip>false</skip>
                         </configuration>
                     </execution>
                     <execution>

@@ -66,22 +66,13 @@ public class TransactionManager {
         }
     }
 
-    public <T> T doReadOnlyInJPA(JPATransactionFunction<T> function) {
+    public <T> T doInJPAWithoutTransaction(JPAWithoutTransactionFunction<T> function) {
         T result;
         EntityManager entityManager = null;
-        EntityTransaction txn = null;
         try {
-            function.beforeTransactionCompletion();
             entityManager = entityManagerProvider.get();
-            txn = entityManager.getTransaction();
-            txn.begin();
             result = function.apply(entityManager);
-            txn.commit();
-        } catch (RuntimeException e) {
-            if ( txn != null && txn.isActive()) txn.rollback();
-            throw e;
         } finally {
-            function.afterTransactionCompletion();
             if (entityManager != null) {
                 entityManager.close();
             }
@@ -109,5 +100,10 @@ public class TransactionManager {
         default void afterTransactionCompletion() {
 
         }
+    }
+
+    @FunctionalInterface
+    public interface JPAWithoutTransactionFunction<T> extends Function<EntityManager, T> {
+
     }
 }

@@ -9,21 +9,30 @@ public class CategoryRepositoryImpl implements CategoryRepository {
 
     @Override
     public void createCategory(Category category, EntityManager entityManager) {
-
         CategoryEntity parentCategoryEntity = createCategoryEntity(category, null);
-
-        category.getSubCategories().forEach(subcategory -> {
-            CategoryEntity subCategoryEntity = createCategoryEntity(subcategory, parentCategoryEntity);
-            entityManager.persist(subCategoryEntity);
-        });
+        persistCategories(category, parentCategoryEntity, entityManager);
     }
 
     @Override
     public boolean checkIfCategoryExists(String name, EntityManager entityManager) {
-        int results = entityManager.createQuery("SELECT COUNT(c) FROM CategoryEntity c WHERE c.categoryName = :name", Integer.class)
+        long results = entityManager.createQuery("SELECT COUNT(c) FROM CategoryEntity c WHERE c.categoryName = :name", Long.class)
             .setParameter("name", name)
             .getSingleResult();
         return results != 0;
+    }
+
+    private void persistCategories(Category category, CategoryEntity parentCategoryEntity, EntityManager entityManager) {
+        entityManager.persist(parentCategoryEntity);
+        persistSubCategoriesIfAny(category, parentCategoryEntity, entityManager);
+    }
+
+    private void persistSubCategoriesIfAny(Category category, CategoryEntity parentCategoryEntity, EntityManager entityManager) {
+        for (int i = 0; i < category.getSubCategories().size(); i++) {
+            Category subcategory = category.getSubCategories().get(i);
+            CategoryEntity subCategoryEntity = createCategoryEntity(subcategory, parentCategoryEntity);
+            entityManager.persist(subCategoryEntity);
+            persistSubCategoriesIfAny(subcategory, subCategoryEntity, entityManager);
+        }
     }
 
     private CategoryEntity createCategoryEntity(Category category, CategoryEntity parentCategory) {
