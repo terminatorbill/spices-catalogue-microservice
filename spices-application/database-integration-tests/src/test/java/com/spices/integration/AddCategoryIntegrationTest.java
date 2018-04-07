@@ -1,10 +1,9 @@
 package com.spices.integration;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import java.security.SecureRandom;
 import java.util.Collections;
 
+import org.assertj.core.api.Assertions;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -48,7 +47,7 @@ public class AddCategoryIntegrationTest {
 
         categoryRepositoryFacade.createCategory(category);
 
-        assertThat(categoryRepositoryFacade.checkAndReturnAnyExistingCategory(category)).isNotEmpty();
+        Assertions.assertThat(categoryRepositoryFacade.checkAndReturnAnyExistingCategory(category)).isNotEmpty();
     }
 
     @DisplayName("should create a new category with one level of subcategories")
@@ -63,8 +62,8 @@ public class AddCategoryIntegrationTest {
 
         categoryRepositoryFacade.createCategory(category);
 
-        assertThat(categoryRepositoryFacade.checkAndReturnAnyExistingCategory(category)).isNotEmpty();
-        assertThat(categoryRepositoryFacade.checkAndReturnAnyExistingCategory(category.getSubCategories().get(0))).isNotEmpty();
+        Assertions.assertThat(categoryRepositoryFacade.checkAndReturnAnyExistingCategory(category)).isNotEmpty();
+        Assertions.assertThat(categoryRepositoryFacade.checkAndReturnAnyExistingCategory(category.getSubCategories().get(0))).isNotEmpty();
     }
 
     @DisplayName("should create a new category with two levels of subcategories")
@@ -81,9 +80,9 @@ public class AddCategoryIntegrationTest {
 
         categoryRepositoryFacade.createCategory(category);
 
-        assertThat(categoryRepositoryFacade.checkAndReturnAnyExistingCategory(category)).isNotEmpty();
-        assertThat(categoryRepositoryFacade.checkAndReturnAnyExistingCategory(category.getSubCategories().get(0))).isNotEmpty();
-        assertThat(categoryRepositoryFacade.checkAndReturnAnyExistingCategory(category.getSubCategories().get(0).getSubCategories().get(0))).isNotEmpty();
+        Assertions.assertThat(categoryRepositoryFacade.checkAndReturnAnyExistingCategory(category)).isNotEmpty();
+        Assertions.assertThat(categoryRepositoryFacade.checkAndReturnAnyExistingCategory(category.getSubCategories().get(0))).isNotEmpty();
+        Assertions.assertThat(categoryRepositoryFacade.checkAndReturnAnyExistingCategory(category.getSubCategories().get(0).getSubCategories().get(0))).isNotEmpty();
     }
 
     private String generateRandomString(int len) {
