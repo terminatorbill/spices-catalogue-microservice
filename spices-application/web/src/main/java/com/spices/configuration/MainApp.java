@@ -11,7 +11,8 @@ import com.spices.modules.PersistentModule;
 import com.spices.persistence.configuration.EntityManagerProvider;
 
 import io.dropwizard.Application;
-import io.dropwizard.configuration.ResourceConfigurationSourceProvider;
+import io.dropwizard.configuration.EnvironmentVariableSubstitutor;
+import io.dropwizard.configuration.SubstitutingSourceProvider;
 import io.dropwizard.jersey.jackson.JsonProcessingExceptionMapper;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
@@ -24,7 +25,10 @@ public class MainApp extends Application<AppConfiguration> {
 
     @Override
     public void initialize(Bootstrap<AppConfiguration> bootstrap) {
-        bootstrap.setConfigurationSourceProvider(new ResourceConfigurationSourceProvider());
+        bootstrap.setConfigurationSourceProvider(new SubstitutingSourceProvider(
+            path -> Thread.currentThread().getContextClassLoader().getResourceAsStream(path),
+            new EnvironmentVariableSubstitutor(false)
+        ));
 
         bootstrap.addBundle(
             GuiceBundle.builder()
