@@ -26,6 +26,7 @@ public class MainApp extends Application<AppConfiguration> {
     @Override
     public void initialize(Bootstrap<AppConfiguration> bootstrap) {
         bootstrap.setConfigurationSourceProvider(new SubstitutingSourceProvider(
+                //bootstrap.getConfigurationSourceProvider()
             path -> Thread.currentThread().getContextClassLoader().getResourceAsStream(path),
             new EnvironmentVariableSubstitutor(false)
         ));
