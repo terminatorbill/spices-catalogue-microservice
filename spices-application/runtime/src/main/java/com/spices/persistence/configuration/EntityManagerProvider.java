@@ -39,7 +39,7 @@ public class EntityManagerProvider implements Managed {
         LOG.info("Postgresql port = {}", environmentVariables.get("it-database.port"));
 
         //TODO: Replace localhost with the ip of the docker postgresql container
-        configOverrides.put("javax.persistence.jdbc.url", "jdbc:postgresql://localhost:"+ environmentVariables.getOrDefault("it-database.port", "5432") +"/catalogue");
+        //configOverrides.put("javax.persistence.jdbc.url", "jdbc:postgresql://localhost:"+ environmentVariables.getOrDefault("it-database.port", "5432") +"/catalogue");
         entityManagerFactory = Persistence.createEntityManagerFactory(persistenceUnit, configOverrides);
     }
 

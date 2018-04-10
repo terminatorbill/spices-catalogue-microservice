@@ -8,7 +8,7 @@
         <exclude-unlisted-classes>false</exclude-unlisted-classes>
         <properties>
             <property name="javax.persistence.jdbc.driver" value="org.postgresql.Driver" /> <!-- DB Driver -->
-            <property name="javax.persistence.jdbc.url" value="jdbc:postgresql://localhost/catalogue" /> <!-- DB Name -->
+            <property name="javax.persistence.jdbc.url" value="jdbc:postgresql://postgres/catalogue" /> <!-- DB Name -->
             <property name="javax.persistence.jdbc.user" value="spices" /> <!-- DB User -->
             <property name="javax.persistence.jdbc.password" value="spices" /> <!-- DB Password -->
 
