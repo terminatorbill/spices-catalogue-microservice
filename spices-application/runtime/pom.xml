@@ -41,6 +41,10 @@
             <artifactId>hibernate-testing</artifactId>
         </dependency>
         <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>
             <scope>test</scope>
@@ -83,10 +87,14 @@
     </dependencies>
 
     <build>
+        <filters>
+            <filter>profiles/${build.profile.id}/config.properties</filter>
+        </filters>
         <sourceDirectory>src/main/java</sourceDirectory>
         <testSourceDirectory>src/test/java</testSourceDirectory>
         <resources>
             <resource>
+                <filtering>true</filtering>
                 <directory>src/main/resources</directory>
             </resource>
         </resources>

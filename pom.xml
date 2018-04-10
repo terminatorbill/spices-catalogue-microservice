@@ -48,12 +48,14 @@
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
         <jdk.version>8</jdk.version>
+        <build.helper.maven.plugin>3.0.0</build.helper.maven.plugin>
     </properties>
 
     <modules>
         <module>spices-application/api</module>
         <module>spices-application/runtime</module>
         <module>spices-application/web</module>
+        <module>spices-application/database-integration-tests</module>
     </modules>
 
     <dependencyManagement>
@@ -163,6 +165,28 @@
         </dependencies>
     </dependencyManagement>
 
+    <profiles>
+        <profile>
+            <id>dev</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <build.profile.id>dev</build.profile.id>
+                <skip.integration.tests>true</skip.integration.tests>
+                <skip.unit.tests>false</skip.unit.tests>
+            </properties>
+        </profile>
+        <profile>
+            <id>integration-test</id>
+            <properties>
+                <build.profile.id>integration-test</build.profile.id>
+                <skip.integration.tests>false</skip.integration.tests>
+                <skip.unit.tests>true</skip.unit.tests>
+            </properties>
+        </profile>
+    </profiles>
+
     <build>
         <pluginManagement>
             <plugins>
@@ -208,25 +232,48 @@
                     <artifactId>maven-surefire-plugin</artifactId>
                     <version>2.19.1</version>
                     <configuration>
+                        <skipTests>${skip.unit.tests}</skipTests>
                         <excludes>
                             <exclude>**/*IntegrationTest.java</exclude>
                             <exclude>**/functional/**</exclude>
                         </excludes>
                     </configuration>
+                    <dependencies>
+                        <dependency>
+                            <groupId>org.junit.jupiter</groupId>
+                            <artifactId>junit-jupiter-engine</artifactId>
+                            <version>${junit.version}</version>
+                        </dependency>
+                        <dependency>
+                            <groupId>org.junit.platform</groupId>
+                            <artifactId>junit-platform-surefire-provider</artifactId>
+                            <version>${junit.platform.version}</version>
+                        </dependency>
+                    </dependencies>
+                </plugin>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>build-helper-maven-plugin</artifactId>
+                    <version>${build.helper.maven.plugin}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-failsafe-plugin</artifactId>
+                    <version>2.19.1</version>
                     <executions>
                         <execution>
-                            <id>integration-test</id>
+                            <id>integration-tests</id>
                             <goals>
-                                <goal>test</goal>
+                                <goal>integration-test</goal>
+                                <goal>verify</goal>
                             </goals>
-                            <phase>integration-test</phase>
                             <configuration>
-                                <excludes>
-                                    <exclude>none</exclude>
-                                </excludes>
-                                <includes>
-                                    <include>**/*IntegrationTest.java</include>
-                                </includes>
+                                <environmentVariables>
+                                    <!--suppress MavenModelInspection -->
+                                    <it-database.port>5432</it-database.port>
+                                </environmentVariables>
+                                <includes>**/*IntegrationTest.java</includes>
+                                <skipTests>${skip.integration.tests}</skipTests>
                             </configuration>
                         </execution>
                     </executions>
@@ -242,6 +289,18 @@
                             <version>${junit.platform.version}</version>
                         </dependency>
                     </dependencies>
+                </plugin>
+                <plugin>
+                    <groupId>io.fabric8</groupId>
+                    <artifactId>docker-maven-plugin</artifactId>
+                    <version>0.24.0</version>
+                    <executions>
+                        <execution>
+                            <configuration>
+                                <skip>true</skip>
+                            </configuration>
+                        </execution>
+                    </executions>
                 </plugin>
             </plugins>
         </pluginManagement>

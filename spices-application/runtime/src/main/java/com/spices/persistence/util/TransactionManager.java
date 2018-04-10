@@ -1,7 +1,5 @@
 package com.spices.persistence.util;
 
-import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -22,14 +20,13 @@ public class TransactionManager {
     }
 
 
-    public <T> T doInJPA(JPATransactionFunction<T> function, int isolationLevel) {
+    public <T> T doInJPA(JPATransactionFunction<T> function) {
         T result;
         EntityTransaction txn = null;
         EntityManager entityManager = null;
         try {
             function.beforeTransactionCompletion();
             entityManager = entityManagerProvider.get();
-            entityManager.unwrap(Connection.class).setTransactionIsolation(isolationLevel);
             txn = entityManager.getTransaction();
             txn.begin();
             result = function.apply(entityManager);
@@ -39,8 +36,6 @@ public class TransactionManager {
                 txn.rollback();
             }
             throw e;
-        } catch (SQLException e) {
-            throw new IllegalStateException(e);
         } finally {
             function.afterTransactionCompletion();
             if (entityManager != null) {
@@ -50,13 +45,12 @@ public class TransactionManager {
         return result;
     }
 
-    public void doInJPA(JPATransactionVoidFunction function, int isolationLevel) {
+    public void doInJPA(JPATransactionVoidFunction function) {
         EntityManager entityManager = null;
         EntityTransaction txn = null;
         try {
             function.beforeTransactionCompletion();
             entityManager = entityManagerProvider.get();
-            entityManager.unwrap(Connection.class).setTransactionIsolation(isolationLevel);
             txn = entityManager.getTransaction();
             txn.begin();
             function.accept(entityManager);
@@ -64,8 +58,6 @@ public class TransactionManager {
         } catch (RuntimeException e) {
             if ( txn != null && txn.isActive()) txn.rollback();
             throw e;
-        } catch (SQLException e) {
-            throw new IllegalStateException(e);
         } finally {
             function.afterTransactionCompletion();
             if (entityManager != null) {
@@ -74,27 +66,13 @@ public class TransactionManager {
         }
     }
 
-    public <T> T doReadOnlyInJPA(JPATransactionFunction<T> function, int isolationLevel) {
+    public <T> T doInJPAWithoutTransaction(JPAWithoutTransactionFunction<T> function) {
         T result;
         EntityManager entityManager = null;
-        EntityTransaction txn = null;
         try {
-            function.beforeTransactionCompletion();
             entityManager = entityManagerProvider.get();
-            Connection connection = entityManager.unwrap(Connection.class);
-            connection.setTransactionIsolation(isolationLevel);
-            connection.setReadOnly(true);
-            txn = entityManager.getTransaction();
-            txn.begin();
             result = function.apply(entityManager);
-            txn.commit();
-        } catch (RuntimeException e) {
-            if ( txn != null && txn.isActive()) txn.rollback();
-            throw e;
-        } catch (SQLException e) {
-            throw new IllegalStateException(e);
         } finally {
-            function.afterTransactionCompletion();
             if (entityManager != null) {
                 entityManager.close();
             }
@@ -122,5 +100,10 @@ public class TransactionManager {
         default void afterTransactionCompletion() {
 
         }
+    }
+
+    @FunctionalInterface
+    public interface JPAWithoutTransactionFunction<T> extends Function<EntityManager, T> {
+
     }
 }
