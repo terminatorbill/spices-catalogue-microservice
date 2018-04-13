@@ -33,10 +33,7 @@ public class EntityManagerProvider implements Managed {
 
     @Override
     public void start() {
-        Map<String, String> environmentVariables = System.getenv();
         Map<String, Object> configOverrides = Maps.newHashMap();
-
-        LOG.info("Postgresql port = {}", environmentVariables.get("it-database.port"));
 
         //TODO: Replace localhost with the ip of the docker postgresql container
         //configOverrides.put("javax.persistence.jdbc.url", "jdbc:postgresql://localhost:"+ environmentVariables.getOrDefault("it-database.port", "5432") +"/catalogue");

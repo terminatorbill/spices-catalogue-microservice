@@ -17,6 +17,7 @@ import io.dropwizard.jersey.jackson.JsonProcessingExceptionMapper;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 import ru.vyarus.dropwizard.guice.GuiceBundle;
+import ru.vyarus.dropwizard.guice.GuiceyOptions;
 
 public class MainApp extends Application<AppConfiguration> {
 
@@ -32,6 +33,7 @@ public class MainApp extends Application<AppConfiguration> {
 
         bootstrap.addBundle(
             GuiceBundle.builder()
+                .option(GuiceyOptions.UseHkBridge, true)
                 .modules(new AppModule(), new PersistentModule())
             .build());
     }
