@@ -12,7 +12,7 @@ public class CategoryCreationRequestToCategoryConverter {
     public Category convert(CategoryCreationRequestDto categoryCreationRequestDto) {
         return new Category(
             null,
-            categoryCreationRequestDto.getParentCategoryId(),
+            null,
             categoryCreationRequestDto.getName(),
             categoryCreationRequestDto.getDescription(),
             Collections.emptyList(),

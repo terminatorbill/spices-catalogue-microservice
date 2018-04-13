@@ -35,9 +35,9 @@ public class CategoryApiTest {
     @Test
     public void shouldCreateCategory() {
         CategoryCreationRequestDto categoryCreationRequestDto = new CategoryCreationRequestDto(
-            null, "Parent Category", "Sample description", Lists.newArrayList(
+            "Parent Category", "Sample description", Lists.newArrayList(
             new CategoryCreationRequestDto(
-                1L, "Child Category", "Sample child description", null
+                "Child Category", "Sample child description", null
             )
         ));
 
@@ -55,7 +55,7 @@ public class CategoryApiTest {
         assertThat(category.getProducts(), is(empty()));
         assertThat(category.getSubCategories(), hasSize(1));
         assertThat(category.getSubCategories().get(0).getId(), is(nullValue()));
-        assertThat(category.getSubCategories().get(0).getParentCategoryId(), is(1L));
+        assertThat(category.getSubCategories().get(0).getParentCategoryId(), is(nullValue()));
         assertThat(category.getSubCategories().get(0).getName(), is(categoryCreationRequestDto.getSubCategories().get(0).getName()));
         assertThat(category.getSubCategories().get(0).getDescription(), is(categoryCreationRequestDto.getSubCategories().get(0).getDescription()));
         assertThat(category.getSubCategories().get(0).getProducts(), is(empty()));
@@ -67,9 +67,9 @@ public class CategoryApiTest {
     @Test
     public void shouldThrowCategoryExistsException() {
         CategoryCreationRequestDto categoryCreationRequestDto = new CategoryCreationRequestDto(
-            null, "Parent Category", "Sample description", Lists.newArrayList(
+            "Parent Category", "Sample description", Lists.newArrayList(
             new CategoryCreationRequestDto(
-                1L, "Child Category", "Sample child description", null
+                "Child Category", "Sample child description", null
             )
         ));
 
@@ -89,7 +89,7 @@ public class CategoryApiTest {
         assertThat(category.getProducts(), is(empty()));
         assertThat(category.getSubCategories(), hasSize(1));
         assertThat(category.getSubCategories().get(0).getId(), is(nullValue()));
-        assertThat(category.getSubCategories().get(0).getParentCategoryId(), is(1L));
+        assertThat(category.getSubCategories().get(0).getParentCategoryId(), is(nullValue()));
         assertThat(category.getSubCategories().get(0).getName(), is(categoryCreationRequestDto.getSubCategories().get(0).getName()));
         assertThat(category.getSubCategories().get(0).getDescription(), is(categoryCreationRequestDto.getSubCategories().get(0).getDescription()));
         assertThat(category.getSubCategories().get(0).getProducts(), is(empty()));
