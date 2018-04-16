@@ -73,11 +73,6 @@
                 <artifactId>guice</artifactId>
                 <version>${guice.version}</version>
             </dependency>
-            <!--<dependency>
-                <groupId>com.google.inject.extensions</groupId>
-                <artifactId>guice-persist</artifactId>
-                <version>${guice.version}</version>
-            </dependency>-->
             <dependency>
                 <groupId>ru.vyarus.guicey</groupId>
                 <artifactId>guicey-bom</artifactId>
@@ -178,6 +173,11 @@
                 <skip.functional.tests>true</skip.functional.tests>
                 <skip.unit.tests>false</skip.unit.tests>
             </properties>
+            <modules>
+                <module>spices-application/api</module>
+                <module>spices-application/runtime</module>
+                <module>spices-application/web</module>
+            </modules>
         </profile>
         <profile>
             <id>integration-test</id>
@@ -187,6 +187,12 @@
                 <skip.unit.tests>true</skip.unit.tests>
                 <skip.functional.tests>true</skip.functional.tests>
             </properties>
+            <modules>
+                <module>spices-application/api</module>
+                <module>spices-application/runtime</module>
+                <module>spices-application/web</module>
+                <module>spices-application/database-integration-tests</module>
+            </modules>
         </profile>
         <profile>
             <id>functional-test</id>
@@ -196,6 +202,12 @@
                 <skip.unit.tests>true</skip.unit.tests>
                 <skip.functional.tests>false</skip.functional.tests>
             </properties>
+            <modules>
+                <module>spices-application/api</module>
+                <module>spices-application/runtime</module>
+                <module>spices-application/web</module>
+                <module>spices-application/functional-tests</module>
+            </modules>
         </profile>
     </profiles>
 
@@ -272,18 +284,6 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-failsafe-plugin</artifactId>
                     <version>2.19.1</version>
-                    <executions>
-                        <execution>
-                            <id>integration-tests</id>
-                            <goals>
-                                <goal>integration-test</goal>
-                                <goal>verify</goal>
-                            </goals>
-                            <configuration>
-                                <includes>**/*IntegrationTest.java</includes>
-                            </configuration>
-                        </execution>
-                    </executions>
                     <dependencies>
                         <dependency>
                             <groupId>org.junit.jupiter</groupId>
@@ -308,6 +308,11 @@
                             </configuration>
                         </execution>
                     </executions>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-antrun-plugin</artifactId>
+                    <version>1.8</version>
                 </plugin>
             </plugins>
         </pluginManagement>
