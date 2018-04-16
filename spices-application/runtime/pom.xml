@@ -91,9 +91,6 @@
     </dependencies>
 
     <build>
-        <filters>
-            <filter>profiles/${build.profile.id}/config.properties</filter>
-        </filters>
         <sourceDirectory>src/main/java</sourceDirectory>
         <testSourceDirectory>src/test/java</testSourceDirectory>
         <resources>
