@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>database-integration-tests</artifactId>
+    <artifactId>functional-tests</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
@@ -18,8 +18,12 @@
     <dependencies>
         <dependency>
             <groupId>com.spices.catalogue</groupId>
-            <artifactId>runtime</artifactId>
+            <artifactId>api</artifactId>
             <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
@@ -56,6 +60,11 @@
             <artifactId>dropwizard-testing</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.javalite</groupId>
+            <artifactId>javalite-common</artifactId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>
@@ -72,7 +81,7 @@
                         </goals>
                         <configuration>
                             <testIncludes>
-                                <testInclude>**/*IntegrationTest.java</testInclude>
+                                <testInclude>**/*FunctionalTest.java</testInclude>
                             </testIncludes>
                         </configuration>
                     </execution>
@@ -105,46 +114,44 @@
                 </executions>
             </plugin>
             <plugin>
-                <groupId>io.fabric8</groupId>
-                <artifactId>docker-maven-plugin</artifactId>
+                <groupId>com.dkanejs.maven.plugins</groupId>
+                <artifactId>docker-compose-maven-plugin</artifactId>
+                <version>1.0.3</version>
                 <configuration>
-                    <images>
-                        <image>
-                            <name>postgres:10.3-alpine</name>
-                            <alias>it-database</alias>
-                            <run>
-                                <env>
-                                    <POSTGRES_PASSWORD>spices</POSTGRES_PASSWORD>
-                                    <POSTGRES_USER>spices</POSTGRES_USER>
-                                    <POSTGRES_DB>catalogue</POSTGRES_DB>
-                                </env>
-                                <ports>
-                                    <port>5432:5432</port>
-                                </ports>
-                                <wait>
-                                    <log>(?s)database system is ready to accept connections.*database system is ready to accept connections</log>
-                                    <time>20000</time>
-                                </wait>
-                            </run>
-                        </image>
-                    </images>
+                    <composeFile>${project.parent.basedir}/docker-compose.yml</composeFile>
+                    <detachedMode>true</detachedMode>
                 </configuration>
                 <executions>
                     <execution>
-                        <id>prepare-it-database</id>
+                        <id>docker-compose-up</id>
                         <phase>pre-integration-test</phase>
                         <goals>
-                            <goal>start</goal>
+                            <goal>up</goal>
                         </goals>
-                        <configuration>
-                            <skip>${skip.integration.tests}</skip>
-                        </configuration>
                     </execution>
                     <execution>
-                        <id>remove-it-database</id>
+                        <id>docker-compose-down</id>
                         <phase>post-integration-test</phase>
                         <goals>
-                            <goal>stop</goal>
+                            <goal>down</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>functional-tests-delay</id>
+                        <phase>pre-integration-test</phase>
+                        <configuration>
+                            <target>
+                                <sleep seconds="10" />
+                            </target>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
                         </goals>
                     </execution>
                 </executions>
@@ -154,18 +161,18 @@
                 <artifactId>maven-failsafe-plugin</artifactId>
                 <executions>
                     <execution>
-                        <id>integration-tests</id>
+                        <id>functional-tests</id>
                         <goals>
                             <goal>integration-test</goal>
                             <goal>verify</goal>
                         </goals>
                         <configuration>
-                            <includes>**/*IntegrationTest.java</includes>
+                            <includes>**/*FunctionalTest.java</includes>
                         </configuration>
                     </execution>
                 </executions>
                 <configuration>
-                    <skipTests>${skip.integration.tests}</skipTests>
+                    <skipTests>${skip.functional.tests}</skipTests>
                 </configuration>
             </plugin>
         </plugins>

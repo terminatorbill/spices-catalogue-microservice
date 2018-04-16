@@ -7,7 +7,7 @@ import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 
-import com.spices.persistence.configuration.EntityManagerProvider;
+import com.spices.persistence.provider.EntityManagerProvider;
 
 public class TransactionManager {
 

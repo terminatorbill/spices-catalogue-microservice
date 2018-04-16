@@ -33,8 +33,8 @@
     <packaging>pom</packaging>
 
     <properties>
-        <dropwizard.version>1.2.4</dropwizard.version>
-        <hibernate.core.version>5.2.13.Final</hibernate.core.version>
+        <dropwizard.version>1.3.0</dropwizard.version>
+        <hibernate.core.version>5.2.15.Final</hibernate.core.version>
         <postgres.version>42.2.1</postgres.version>
         <junit.version>5.1.0</junit.version>
         <junit.platform.version>1.1.0</junit.platform.version>
@@ -56,6 +56,7 @@
         <module>spices-application/runtime</module>
         <module>spices-application/web</module>
         <module>spices-application/database-integration-tests</module>
+        <module>spices-application/functional-tests</module>
     </modules>
 
     <dependencyManagement>
@@ -72,11 +73,6 @@
                 <artifactId>guice</artifactId>
                 <version>${guice.version}</version>
             </dependency>
-            <!--<dependency>
-                <groupId>com.google.inject.extensions</groupId>
-                <artifactId>guice-persist</artifactId>
-                <version>${guice.version}</version>
-            </dependency>-->
             <dependency>
                 <groupId>ru.vyarus.guicey</groupId>
                 <artifactId>guicey-bom</artifactId>
@@ -174,8 +170,14 @@
             <properties>
                 <build.profile.id>dev</build.profile.id>
                 <skip.integration.tests>true</skip.integration.tests>
+                <skip.functional.tests>true</skip.functional.tests>
                 <skip.unit.tests>false</skip.unit.tests>
             </properties>
+            <modules>
+                <module>spices-application/api</module>
+                <module>spices-application/runtime</module>
+                <module>spices-application/web</module>
+            </modules>
         </profile>
         <profile>
             <id>integration-test</id>
@@ -183,7 +185,29 @@
                 <build.profile.id>integration-test</build.profile.id>
                 <skip.integration.tests>false</skip.integration.tests>
                 <skip.unit.tests>true</skip.unit.tests>
+                <skip.functional.tests>true</skip.functional.tests>
             </properties>
+            <modules>
+                <module>spices-application/api</module>
+                <module>spices-application/runtime</module>
+                <module>spices-application/web</module>
+                <module>spices-application/database-integration-tests</module>
+            </modules>
+        </profile>
+        <profile>
+            <id>functional-test</id>
+            <properties>
+                <build.profile.id>functional-test</build.profile.id>
+                <skip.integration.tests>true</skip.integration.tests>
+                <skip.unit.tests>true</skip.unit.tests>
+                <skip.functional.tests>false</skip.functional.tests>
+            </properties>
+            <modules>
+                <module>spices-application/api</module>
+                <module>spices-application/runtime</module>
+                <module>spices-application/web</module>
+                <module>spices-application/functional-tests</module>
+            </modules>
         </profile>
     </profiles>
 
@@ -260,23 +284,6 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-failsafe-plugin</artifactId>
                     <version>2.19.1</version>
-                    <executions>
-                        <execution>
-                            <id>integration-tests</id>
-                            <goals>
-                                <goal>integration-test</goal>
-                                <goal>verify</goal>
-                            </goals>
-                            <configuration>
-                                <environmentVariables>
-                                    <!--suppress MavenModelInspection -->
-                                    <it-database.port>5432</it-database.port>
-                                </environmentVariables>
-                                <includes>**/*IntegrationTest.java</includes>
-                                <skipTests>${skip.integration.tests}</skipTests>
-                            </configuration>
-                        </execution>
-                    </executions>
                     <dependencies>
                         <dependency>
                             <groupId>org.junit.jupiter</groupId>
@@ -301,6 +308,11 @@
                             </configuration>
                         </execution>
                     </executions>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-antrun-plugin</artifactId>
+                    <version>1.8</version>
                 </plugin>
             </plugins>
         </pluginManagement>

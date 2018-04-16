@@ -23,7 +23,7 @@ public class CategoryCreationRequestToCategoryConverterTest {
     @Test
     public void convertToCategoryWithSubcategoriesToNull() {
         CategoryCreationRequestDto categoryCreationRequestDto = new CategoryCreationRequestDto(
-            null, "Parent Category", "Sample description", null
+            "Parent Category", "Sample description", null
         );
 
         Category category = toCategoryConverter.convert(categoryCreationRequestDto);
@@ -40,7 +40,7 @@ public class CategoryCreationRequestToCategoryConverterTest {
     @Test
     public void convertToCategoryWithSubcategoriesToEmpty() {
         CategoryCreationRequestDto categoryCreationRequestDto = new CategoryCreationRequestDto(
-            null, "Parent Category", "Sample description", Collections.emptyList()
+            "Parent Category", "Sample description", Collections.emptyList()
         );
 
         Category category = toCategoryConverter.convert(categoryCreationRequestDto);
@@ -57,9 +57,9 @@ public class CategoryCreationRequestToCategoryConverterTest {
     @Test
     public void convertToCategoryWithNullSub_Subcategories() {
         CategoryCreationRequestDto categoryCreationRequestDto = new CategoryCreationRequestDto(
-            null, "Parent Category", "Sample description", Lists.newArrayList(
+            "Parent Category", "Sample description", Lists.newArrayList(
                 new CategoryCreationRequestDto(
-                    1L, "Child Category", "Sample child description", null
+                    "Child Category", "Sample child description", null
                 )
             )
         );
@@ -73,7 +73,7 @@ public class CategoryCreationRequestToCategoryConverterTest {
         assertThat(category.getProducts(), is(empty()));
         assertThat(category.getSubCategories(), hasSize(1));
         assertThat(category.getSubCategories().get(0).getId(), is(nullValue()));
-        assertThat(category.getSubCategories().get(0).getParentCategoryId(), is(categoryCreationRequestDto.getSubCategories().get(0).getParentCategoryId()));
+        assertThat(category.getSubCategories().get(0).getParentCategoryId(), is(nullValue()));
         assertThat(category.getSubCategories().get(0).getName(), is(categoryCreationRequestDto.getSubCategories().get(0).getName()));
         assertThat(category.getSubCategories().get(0).getDescription(), is(categoryCreationRequestDto.getSubCategories().get(0).getDescription()));
         assertThat(category.getSubCategories().get(0).getProducts(), is(empty()));
@@ -84,9 +84,9 @@ public class CategoryCreationRequestToCategoryConverterTest {
     @Test
     public void convertToCategoryWithEmptySub_SubCategories() {
         CategoryCreationRequestDto categoryCreationRequestDto = new CategoryCreationRequestDto(
-            null, "Parent Category", "Sample description", Lists.newArrayList(
+            "Parent Category", "Sample description", Lists.newArrayList(
             new CategoryCreationRequestDto(
-                1L, "Child Category", "Sample child description", Collections.emptyList()
+                "Child Category", "Sample child description", Collections.emptyList()
             )
         )
         );
@@ -100,7 +100,7 @@ public class CategoryCreationRequestToCategoryConverterTest {
         assertThat(category.getProducts(), is(empty()));
         assertThat(category.getSubCategories(), hasSize(1));
         assertThat(category.getSubCategories().get(0).getId(), is(nullValue()));
-        assertThat(category.getSubCategories().get(0).getParentCategoryId(), is(categoryCreationRequestDto.getSubCategories().get(0).getParentCategoryId()));
+        assertThat(category.getSubCategories().get(0).getParentCategoryId(), is(nullValue()));
         assertThat(category.getSubCategories().get(0).getName(), is(categoryCreationRequestDto.getSubCategories().get(0).getName()));
         assertThat(category.getSubCategories().get(0).getDescription(), is(categoryCreationRequestDto.getSubCategories().get(0).getDescription()));
         assertThat(category.getSubCategories().get(0).getProducts(), is(empty()));
