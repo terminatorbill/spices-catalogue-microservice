@@ -20,13 +20,14 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import com.spices.domain.Category;
-import com.spices.persistence.model.CategoryEntity;
 import com.spices.persistence.provider.EntityManagerProvider;
 import com.spices.persistence.repository.CategoryRepository;
 import com.spices.persistence.repository.CategoryRepositoryFacade;
 import com.spices.persistence.repository.CategoryRepositoryFacadeImpl;
 import com.spices.persistence.repository.CategoryRepositoryImpl;
 import com.spices.persistence.util.TransactionManager;
+import com.spices.repository.CategoryTestRepository;
+import com.spices.repository.CategoryTestRepositoryImpl;
 
 public class UpdateCategoryIntegrationTest {
     private static final EntityManagerFactory ENTITY_MANAGER_FACTORY = Persistence.createEntityManagerFactory("catalogueManager");
@@ -34,6 +35,7 @@ public class UpdateCategoryIntegrationTest {
     private final CategoryRepository categoryRepository = new CategoryRepositoryImpl();
     private final TransactionManager transactionManager = new TransactionManager(ENTITY_MANAGER_PROVIDER);
     private final CategoryRepositoryFacade categoryRepositoryFacade = new CategoryRepositoryFacadeImpl(categoryRepository, transactionManager);
+    private final CategoryTestRepository categoryTestRepository = new CategoryTestRepositoryImpl(transactionManager);
 
     @AfterAll
     public static void tearDown() {
@@ -60,14 +62,14 @@ public class UpdateCategoryIntegrationTest {
         Assertions.assertThat(categoryRepositoryFacade.checkAndReturnAnyExistingCategory(category2)).isNotEmpty();
 
         List<Category> categoriesToUpdate = Lists.newArrayList(
-                new Category(getCategory(category1.getName()).getId(), null, category1.getName(), "Updated description", category1.getProducts(), category1.getSubCategories()),
-                new Category(getCategory(category2.getName()).getId(), null, "Updated name", "Updated description", category2.getProducts(), category2.getSubCategories())
+                new Category(categoryTestRepository.getCategory(category1.getName()).getId(), null, category1.getName(), "Updated description", category1.getProducts(), category1.getSubCategories()),
+                new Category(categoryTestRepository.getCategory(category2.getName()).getId(), null, "Updated name", "Updated description", category2.getProducts(), category2.getSubCategories())
         );
 
         categoryRepositoryFacade.updateCategories(categoriesToUpdate);
 
-        category1 = getCategory(categoriesToUpdate.get(0).getName());
-        category2 = getCategory(categoriesToUpdate.get(1).getName());
+        category1 = categoryTestRepository.getCategory(categoriesToUpdate.get(0).getName());
+        category2 = categoryTestRepository.getCategory(categoriesToUpdate.get(1).getName());
         assertThat(category1.getName(), is(category1.getName()));
         assertThat(category1.getParentCategoryId(), is(nullValue()));
         assertThat(category1.getId(), is(notNullValue()));
@@ -81,18 +83,5 @@ public class UpdateCategoryIntegrationTest {
         assertThat(category2.getDescription(), is("Updated description"));
         assertThat(category2.getSubCategories(), is(empty()));
         assertThat(category2.getProducts(), is(empty()));
-    }
-
-    private Category getCategory(String categoryName) {
-        return transactionManager.doInJPAWithoutTransaction(entityManager -> {
-            CategoryEntity categoryEntity = entityManager
-                    .createQuery("SELECT c FROM CategoryEntity c WHERE c.categoryName = :categoryName", CategoryEntity.class)
-                    .setParameter("categoryName", categoryName)
-                    .getSingleResult();
-
-            return new Category(
-                    categoryEntity.getCategoryId(), null, categoryEntity.getCategoryName(), categoryEntity.getCategoryDescription(), Collections.emptyList(), Collections.emptyList()
-            );
-        });
     }
 }
