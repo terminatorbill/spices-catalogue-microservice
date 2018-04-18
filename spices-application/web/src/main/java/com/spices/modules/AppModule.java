@@ -18,11 +18,7 @@ public class AppModule extends AbstractModule {
         bind(CategoryCreationRequestToCategoryConverter.class);
 
         bind(CategoryService.class)
-            .to(CategoryServiceImpl.class)
-            .in(Singleton.class);
-
-        bind(CategoryRepository.class)
-            .to(CategoryRepositoryImpl.class)
-            .in(Singleton.class);
+                .to(CategoryServiceImpl.class)
+                .in(Singleton.class);
     }
 }
