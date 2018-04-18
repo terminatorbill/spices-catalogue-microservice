@@ -1,5 +1,6 @@
 package com.spices.persistence.repository;
 
+import java.util.List;
 import java.util.Optional;
 
 import javax.inject.Inject;
@@ -34,6 +35,18 @@ public class CategoryRepositoryFacadeImpl implements CategoryRepositoryFacade {
                 .findFirst();
 
             return potentialPresentCategory.map(Category::getName);
+        });
+    }
+
+    @Override
+    public boolean checkIfCategoryExists(Category category) {
+        return transactionManager.doInJPAWithoutTransaction(entityManager -> checkIfCategoryExists(category, entityManager));
+    }
+
+    @Override
+    public void updateCategories(List<Category> categories) {
+        transactionManager.doInJPA(entityManager -> {
+            categories.forEach(category -> categoryRepository.updateCategory(category, entityManager));
         });
     }
 

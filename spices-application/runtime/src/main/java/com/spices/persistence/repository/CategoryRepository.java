@@ -8,4 +8,6 @@ public interface CategoryRepository {
     void createCategory(Category category, EntityManager entityManager);
 
     boolean checkIfCategoryExists(String name, EntityManager entityManager);
+
+    void updateCategory(Category category, EntityManager entityManager);
 }

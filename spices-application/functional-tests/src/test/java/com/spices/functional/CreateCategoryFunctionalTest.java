@@ -1,5 +1,6 @@
 package com.spices.functional;
 
+import static com.spices.common.TestHelper.generateRandomString;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.nullValue;
@@ -137,18 +138,5 @@ public class CreateCategoryFunctionalTest {
                 ))
             )
         ));
-    }
-
-    private String generateRandomString(int len) {
-        String letters = "abcdefghijklmnopqrstyvw";
-        SecureRandom rnd = new SecureRandom();
-
-        StringBuilder sb = new StringBuilder(len);
-
-        for (int i = 0; i < len; i++) {
-            sb.append(letters.charAt(rnd.nextInt(letters.length())));
-        }
-
-        return sb.toString();
     }
 }

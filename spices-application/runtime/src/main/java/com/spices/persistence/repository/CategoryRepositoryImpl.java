@@ -21,6 +21,13 @@ public class CategoryRepositoryImpl implements CategoryRepository {
         return results != 0;
     }
 
+    @Override
+    public void updateCategory(Category category, EntityManager entityManager) {
+        CategoryEntity categoryEntity = createCategoryEntity(category, null);
+        categoryEntity.setCategoryId(category.getId());
+        entityManager.merge(categoryEntity);
+    }
+
     private void persistCategories(Category category, CategoryEntity parentCategoryEntity, EntityManager entityManager) {
         entityManager.persist(parentCategoryEntity);
         persistSubCategoriesIfAny(category, parentCategoryEntity, entityManager);

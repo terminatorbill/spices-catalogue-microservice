@@ -1,6 +1,7 @@
 package com.spices.integration;
 
-import java.security.SecureRandom;
+import static com.spices.common.TestHelpers.generateRandomString;
+
 import java.util.Collections;
 
 import javax.persistence.EntityManagerFactory;
@@ -79,18 +80,5 @@ public class AddCategoryIntegrationTest {
         Assertions.assertThat(categoryRepositoryFacade.checkAndReturnAnyExistingCategory(category)).isNotEmpty();
         Assertions.assertThat(categoryRepositoryFacade.checkAndReturnAnyExistingCategory(category.getSubCategories().get(0))).isNotEmpty();
         Assertions.assertThat(categoryRepositoryFacade.checkAndReturnAnyExistingCategory(category.getSubCategories().get(0).getSubCategories().get(0))).isNotEmpty();
-    }
-
-    private String generateRandomString(int len) {
-        String letters = "abcdefghijklmnopqrstyvw";
-        SecureRandom rnd = new SecureRandom();
-
-        StringBuilder sb = new StringBuilder(len);
-
-        for (int i = 0; i < len; i++) {
-            sb.append(letters.charAt(rnd.nextInt(letters.length())));
-        }
-
-        return sb.toString();
     }
 }

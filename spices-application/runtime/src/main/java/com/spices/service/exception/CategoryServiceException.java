@@ -4,7 +4,8 @@ public class CategoryServiceException extends RuntimeException {
     private final Type type;
 
     public enum Type {
-        DUPLICATE_CATEGORY
+        DUPLICATE_CATEGORY,
+        CATEGORY_DOES_NOT_EXIST
     }
 
     public CategoryServiceException(String message, Type type) {
