@@ -24,7 +24,8 @@ public class CategoryRepositoryImpl implements CategoryRepository {
     @Override
     public void updateCategory(Category category, EntityManager entityManager) {
         CategoryEntity categoryEntity = createCategoryEntity(category, null);
-        entityManager.persist(categoryEntity);
+        categoryEntity.setCategoryId(category.getId());
+        entityManager.merge(categoryEntity);
     }
 
     private void persistCategories(Category category, CategoryEntity parentCategoryEntity, EntityManager entityManager) {
@@ -43,7 +44,6 @@ public class CategoryRepositoryImpl implements CategoryRepository {
 
     private CategoryEntity createCategoryEntity(Category category, CategoryEntity parentCategory) {
         CategoryEntity categoryEntity = new CategoryEntity();
-        categoryEntity.setCategoryId(category.getId());
         categoryEntity.setCategoryDescription(category.getDescription());
         categoryEntity.setCategoryName(category.getName());
         categoryEntity.setParentCategory(parentCategory);

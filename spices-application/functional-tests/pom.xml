@@ -146,6 +146,7 @@
                         <id>functional-tests-delay</id>
                         <phase>pre-integration-test</phase>
                         <configuration>
+                            <skip>${skip.functional.tests}</skip>
                             <target>
                                 <sleep seconds="10" />
                             </target>

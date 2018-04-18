@@ -5,6 +5,7 @@ import com.google.common.collect.Sets;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -26,7 +27,7 @@ public class ProductEntity {
     @GeneratedValue(generator = "product_seq", strategy = GenerationType.SEQUENCE)
     private Long productId;
 
-    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
     @JoinTable(
         name = "category_product",
         joinColumns = @JoinColumn(name = "category_id"),
