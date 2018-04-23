@@ -16,13 +16,16 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
+import com.spices.api.converter.CategoryToCategoryResponseDtoConverter;
+import com.spices.api.dto.CategoryResponseDto;
 import com.spices.domain.Category;
 import com.spices.persistence.repository.CategoryRepositoryFacade;
 import com.spices.service.exception.CategoryServiceException;
 
 public class CategoryServiceImplTest {
     private final CategoryRepositoryFacade categoryRepositoryFacade = Mockito.mock(CategoryRepositoryFacade.class);
-    private final CategoryService categoryService = new CategoryServiceImpl(categoryRepositoryFacade);
+    private final CategoryToCategoryResponseDtoConverter toCategoryResponseDtoConverter = new CategoryToCategoryResponseDtoConverter();
+    private final CategoryService categoryService = new CategoryServiceImpl(categoryRepositoryFacade, toCategoryResponseDtoConverter);
 
     @DisplayName("should create a new category")
     @Test
@@ -50,12 +53,57 @@ public class CategoryServiceImplTest {
 
         List<Category> categories = Lists.newArrayList(category1, category2);
 
-        when(categoryRepositoryFacade.checkIfCategoryExists(category1)).thenReturn(false);
-        when(categoryRepositoryFacade.checkIfCategoryExists(category2)).thenReturn(false);
+        when(categoryRepositoryFacade.checkIfCategoryExists(category1.getId())).thenReturn(true);
+        when(categoryRepositoryFacade.checkIfCategoryExists(category2.getId())).thenReturn(true);
 
         categoryService.updateCategories(categories);
 
         verify(categoryRepositoryFacade, times(1)).updateCategories(Lists.newArrayList(category1, category2));
+    }
+
+    @DisplayName("should retrieve all the categories")
+    @Test
+    public void shouldRetrieveAllCategories() {
+        List<CategoryResponseDto> expectedCategories = Lists.newArrayList(
+                new CategoryResponseDto(
+                        1L,
+                        null,
+                        "foo",
+                        "foo description"
+                ),
+                new CategoryResponseDto(
+                        2L,
+                        1L,
+                        "bar",
+                        "bar description"
+                )
+        );
+
+        Category category1 = new Category(
+                1L,
+                null,
+                "foo",
+                "foo description",
+                Collections.emptyList(),
+                Collections.emptyList()
+        );
+
+        Category category2 = new Category(
+                2L,
+                1L,
+                "bar",
+                "bar description",
+                Collections.emptyList(),
+                Collections.emptyList()
+        );
+
+        when(categoryRepositoryFacade.getCategories()).thenReturn(Lists.newArrayList(category1, category2));
+
+        List<CategoryResponseDto> actualCategories = categoryService.retrieveCategories();
+
+        assertThat(actualCategories.size(), is(expectedCategories.size()));
+        assertThat(actualCategories.get(0), is(expectedCategories.get(0)));
+        assertThat(actualCategories.get(1), is(expectedCategories.get(1)));
     }
 
     @DisplayName("should throw CategoryServiceException with code DUPLICATE_CATEGORY when creating a category that already exists")
@@ -88,8 +136,8 @@ public class CategoryServiceImplTest {
 
         List<Category> categories = Lists.newArrayList(category1, category2);
 
-        when(categoryRepositoryFacade.checkIfCategoryExists(category1)).thenReturn(false);
-        when(categoryRepositoryFacade.checkIfCategoryExists(category2)).thenReturn(true);
+        when(categoryRepositoryFacade.checkIfCategoryExists(category1.getId())).thenReturn(false);
+        when(categoryRepositoryFacade.checkIfCategoryExists(category2.getId())).thenReturn(true);
 
         CategoryServiceException ex = assertThrows(CategoryServiceException.class, () -> categoryService.updateCategories(categories));
 

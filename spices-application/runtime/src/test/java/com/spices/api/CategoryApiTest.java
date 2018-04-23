@@ -11,7 +11,9 @@ import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
+import java.util.Collections;
 import java.util.List;
 
 import javax.ws.rs.core.Response;
@@ -24,6 +26,7 @@ import org.mockito.Mockito;
 
 import com.spices.api.converter.CategoryCreationRequestToCategoryConverter;
 import com.spices.api.dto.CategoryCreationRequestDto;
+import com.spices.api.dto.CategoryResponseDto;
 import com.spices.api.dto.CategoryUpdateRequestDto;
 import com.spices.api.exception.CategoryAlreadyExistsException;
 import com.spices.api.exception.CategoryDoesNotExistsException;
@@ -98,6 +101,32 @@ public class CategoryApiTest {
         assertThat(categories.get(1).getParentCategoryId(), is(nullValue()));
         assertThat(categories.get(1).getProducts(), is(empty()));
         assertThat(categories.get(1).getSubCategories(), is(empty()));
+    }
+
+    @DisplayName("should retrieve all categories and return a 200 Response")
+    @Test
+    public void shouldRetrieveAllCategories() {
+        List<CategoryResponseDto> expectedCategories = Lists.newArrayList(
+                new CategoryResponseDto(
+                        1L,
+                        null,
+                        "foo",
+                        "foo description"
+                ),
+                new CategoryResponseDto(
+                        2L,
+                        1L,
+                        "bar",
+                        "bar description"
+                )
+        );
+
+        when(categoryService.retrieveCategories()).thenReturn(expectedCategories);
+
+        List<CategoryResponseDto> actualCategories = categoryApi.retrieveCategories();
+
+        assertThat(actualCategories, is(expectedCategories));
+
     }
 
     @DisplayName("should throw CategoryAlreadyExistsException when a CategoryServiceException with code DUPLICATE_CATEGORY is thrown when creating a new category")

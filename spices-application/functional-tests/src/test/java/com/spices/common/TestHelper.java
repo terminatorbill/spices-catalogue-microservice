@@ -8,7 +8,7 @@ import com.google.common.io.Resources;
 
 public final class TestHelper {
     private static final String BASE_PATH = "http://localhost:8990/categories";
-    public static final String CREATE_CATEGORIES_PATH = BASE_PATH;
+    public static final String CATEGORIES_PATH = BASE_PATH;
 
     private TestHelper() {
     }

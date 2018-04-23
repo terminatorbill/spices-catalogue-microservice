@@ -9,7 +9,9 @@ public interface CategoryRepositoryFacade {
     void createCategory(Category category);
     Optional<String> checkAndReturnAnyExistingCategory(Category category);
 
-    boolean checkIfCategoryExists(Category category);
+    boolean checkIfCategoryExists(Long categoryId);
 
     void updateCategories(List<Category> categories);
+
+    List<Category> getCategories();
 }

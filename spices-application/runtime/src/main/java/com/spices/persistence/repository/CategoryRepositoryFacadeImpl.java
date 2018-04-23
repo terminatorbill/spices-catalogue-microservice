@@ -1,12 +1,15 @@
 package com.spices.persistence.repository;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 
 import com.spices.domain.Category;
+import com.spices.persistence.model.CategoryEntity;
 import com.spices.persistence.util.TransactionManager;
 
 public class CategoryRepositoryFacadeImpl implements CategoryRepositoryFacade {
@@ -39,8 +42,8 @@ public class CategoryRepositoryFacadeImpl implements CategoryRepositoryFacade {
     }
 
     @Override
-    public boolean checkIfCategoryExists(Category category) {
-        return transactionManager.doInJPAWithoutTransaction(entityManager -> checkIfCategoryExists(category, entityManager));
+    public boolean checkIfCategoryExists(Long categoryId) {
+        return transactionManager.doInJPAWithoutTransaction(entityManager -> checkIfCategoryExists(categoryId, entityManager));
     }
 
     @Override
@@ -50,7 +53,30 @@ public class CategoryRepositoryFacadeImpl implements CategoryRepositoryFacade {
         });
     }
 
+    @Override
+    public List<Category> getCategories() {
+        return transactionManager.doInJPA(entityManager -> {
+            return categoryRepository.getCategories(entityManager).stream()
+                    .map(this::convertToCategory)
+                    .collect(Collectors.toList());
+        });
+    }
+
+    private Category convertToCategory(CategoryEntity categoryEntity) {
+        return new Category(
+                categoryEntity.getCategoryId(), getParentCategoryIdIfAny(categoryEntity.getParentCategory()), categoryEntity.getCategoryName(), categoryEntity.getCategoryDescription(), Collections.emptyList(), Collections.emptyList()
+        );
+    }
+
+    private Long getParentCategoryIdIfAny(CategoryEntity parentCategory) {
+        return parentCategory != null ? parentCategory.getCategoryId() : null;
+    }
+
     private boolean checkIfCategoryExists(Category category, EntityManager entityManager) {
         return categoryRepository.checkIfCategoryExists(category.getName(), entityManager);
+    }
+
+    private boolean checkIfCategoryExists(Long categoryId, EntityManager entityManager) {
+        return categoryRepository.checkIfCategoryExists(categoryId, entityManager);
     }
 }

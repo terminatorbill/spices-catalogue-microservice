@@ -1,5 +1,7 @@
 package com.spices.persistence.repository;
 
+import java.util.List;
+
 import javax.persistence.EntityManager;
 
 import com.spices.domain.Category;
@@ -22,10 +24,33 @@ public class CategoryRepositoryImpl implements CategoryRepository {
     }
 
     @Override
+    public boolean checkIfCategoryExists(Long categoryId, EntityManager entityManager) {
+        long results = entityManager.createQuery("SELECT COUNT(c) FROM CategoryEntity c WHERE c.categoryId = :categoryId", Long.class)
+                .setParameter("categoryId", categoryId)
+                .getSingleResult();
+        return results != 0;
+    }
+
+    @Override
     public void updateCategory(Category category, EntityManager entityManager) {
-        CategoryEntity categoryEntity = createCategoryEntity(category, null);
-        categoryEntity.setCategoryId(category.getId());
-        entityManager.merge(categoryEntity);
+
+        CategoryEntity categoryEntity = getCategory(category.getId(), entityManager);
+        categoryEntity.setCategoryDescription(category.getDescription());
+        categoryEntity.setCategoryName(category.getName());
+
+    }
+
+    @Override
+    public List<CategoryEntity> getCategories(EntityManager entityManager) {
+        return entityManager.createQuery("SELECT c FROM CategoryEntity c", CategoryEntity.class)
+                .getResultList();
+    }
+
+    @Override
+    public CategoryEntity getCategory(Long categoryId, EntityManager entityManager) {
+        return entityManager.createQuery("SELECT c FROM CategoryEntity c LEFT JOIN FETCH c.parentCategory WHERE c.categoryId = :categoryId", CategoryEntity.class)
+                .setParameter("categoryId", categoryId)
+                .getSingleResult();
     }
 
     private void persistCategories(Category category, CategoryEntity parentCategoryEntity, EntityManager entityManager) {

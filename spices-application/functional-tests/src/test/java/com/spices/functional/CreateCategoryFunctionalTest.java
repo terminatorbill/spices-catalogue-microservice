@@ -6,7 +6,6 @@ import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-import java.security.SecureRandom;
 import java.util.Collections;
 
 import javax.servlet.http.HttpServletResponse;
@@ -32,7 +31,7 @@ public class CreateCategoryFunctionalTest {
     public void createRootCategoryOnly() {
         CategoryCreationRequestDto categoryCreationRequestDto = createRequestDtoWithSingleLevel();
 
-        Post createCategoryResponse = Http.post(TestHelper.CREATE_CATEGORIES_PATH, JsonHelper.toString(categoryCreationRequestDto))
+        Post createCategoryResponse = Http.post(TestHelper.CATEGORIES_PATH, JsonHelper.toString(categoryCreationRequestDto))
             .header("Content-Type", MediaType.APPLICATION_JSON);
 
         assertThat(createCategoryResponse.responseCode(), is(HttpServletResponse.SC_CREATED));
@@ -43,7 +42,7 @@ public class CreateCategoryFunctionalTest {
     public void createCategoryWithOneSubLevel() {
         CategoryCreationRequestDto categoryCreationRequestDto = createRequestDtoWithOneSubLevel();
 
-        Post createCategoryResponse = Http.post(TestHelper.CREATE_CATEGORIES_PATH, JsonHelper.toString(categoryCreationRequestDto))
+        Post createCategoryResponse = Http.post(TestHelper.CATEGORIES_PATH, JsonHelper.toString(categoryCreationRequestDto))
             .header("Content-Type", MediaType.APPLICATION_JSON);
 
         assertThat(createCategoryResponse.responseCode(), is(HttpServletResponse.SC_CREATED));
@@ -54,7 +53,7 @@ public class CreateCategoryFunctionalTest {
     public void createCategoryWithMultipleSubLevels() {
         CategoryCreationRequestDto categoryCreationRequestDto = createRequestDtoWithMultipleSubLevels();
 
-        Post createCategoryResponse = Http.post(TestHelper.CREATE_CATEGORIES_PATH, JsonHelper.toString(categoryCreationRequestDto))
+        Post createCategoryResponse = Http.post(TestHelper.CATEGORIES_PATH, JsonHelper.toString(categoryCreationRequestDto))
             .header("Content-Type", MediaType.APPLICATION_JSON);
 
         assertThat(createCategoryResponse.responseCode(), is(HttpServletResponse.SC_CREATED));
@@ -65,13 +64,13 @@ public class CreateCategoryFunctionalTest {
     public void throwDuplicateCategory() {
         CategoryCreationRequestDto categoryCreationRequestDto = createRequestDtoWithMultipleSubLevels();
 
-        Post createCategoryResponse = Http.post(TestHelper.CREATE_CATEGORIES_PATH, JsonHelper.toString(categoryCreationRequestDto))
+        Post createCategoryResponse = Http.post(TestHelper.CATEGORIES_PATH, JsonHelper.toString(categoryCreationRequestDto))
             .header("Content-Type", MediaType.APPLICATION_JSON);
 
         assertThat(createCategoryResponse.responseCode(), is(HttpServletResponse.SC_CREATED));
 
         //we try to resubmit the same query
-        createCategoryResponse = Http.post(TestHelper.CREATE_CATEGORIES_PATH, JsonHelper.toString(categoryCreationRequestDto))
+        createCategoryResponse = Http.post(TestHelper.CATEGORIES_PATH, JsonHelper.toString(categoryCreationRequestDto))
             .header("Content-Type", MediaType.APPLICATION_JSON);
 
         assertThat(createCategoryResponse.responseCode(), is(HttpServletResponse.SC_CONFLICT));
@@ -83,7 +82,7 @@ public class CreateCategoryFunctionalTest {
 
         //we change the root category name to assert that the first sublevel duplicate category will trigger the error
         categoryCreationRequestDto.setName("123");
-        createCategoryResponse = Http.post(TestHelper.CREATE_CATEGORIES_PATH, JsonHelper.toString(categoryCreationRequestDto))
+        createCategoryResponse = Http.post(TestHelper.CATEGORIES_PATH, JsonHelper.toString(categoryCreationRequestDto))
             .header("Content-Type", MediaType.APPLICATION_JSON);
 
         assertThat(createCategoryResponse.responseCode(), is(HttpServletResponse.SC_CONFLICT));
@@ -96,7 +95,7 @@ public class CreateCategoryFunctionalTest {
         //we change the root category name and the first level category name to assert that the second sublevel duplicate category will trigger the error
         categoryCreationRequestDto.setName("1234");
         categoryCreationRequestDto.getSubCategories().get(0).setName("123456");
-        createCategoryResponse = Http.post(TestHelper.CREATE_CATEGORIES_PATH, JsonHelper.toString(categoryCreationRequestDto))
+        createCategoryResponse = Http.post(TestHelper.CATEGORIES_PATH, JsonHelper.toString(categoryCreationRequestDto))
                 .header("Content-Type", MediaType.APPLICATION_JSON);
 
         assertThat(createCategoryResponse.responseCode(), is(HttpServletResponse.SC_CONFLICT));

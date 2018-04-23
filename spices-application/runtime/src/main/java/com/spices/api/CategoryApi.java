@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -13,6 +14,7 @@ import javax.ws.rs.core.Response;
 
 import com.spices.api.converter.CategoryCreationRequestToCategoryConverter;
 import com.spices.api.dto.CategoryCreationRequestDto;
+import com.spices.api.dto.CategoryResponseDto;
 import com.spices.api.dto.CategoryUpdateRequestDto;
 import com.spices.api.exception.CategoryAlreadyExistsException;
 import com.spices.api.exception.CategoryDoesNotExistsException;
@@ -59,5 +61,10 @@ public class CategoryApi {
                     throw new CategoryDoesNotExistsException(String.format("Category with id %s does not exist", e.getMessage()));
             }
         }
+    }
+
+    @GET
+    public List<CategoryResponseDto> retrieveCategories() {
+        return categoryService.retrieveCategories();
     }
 }
