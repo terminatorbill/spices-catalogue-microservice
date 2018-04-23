@@ -1,5 +1,7 @@
 package com.spices.persistence.repository;
 
+import java.util.List;
+
 import javax.persistence.EntityManager;
 
 import com.spices.domain.Category;
@@ -26,6 +28,12 @@ public class CategoryRepositoryImpl implements CategoryRepository {
         CategoryEntity categoryEntity = createCategoryEntity(category, null);
         categoryEntity.setCategoryId(category.getId());
         entityManager.merge(categoryEntity);
+    }
+
+    @Override
+    public List<CategoryEntity> getCategories(EntityManager entityManager) {
+        return entityManager.createQuery("SELECT c FROM CategoryEntity c", CategoryEntity.class)
+                .getResultList();
     }
 
     private void persistCategories(Category category, CategoryEntity parentCategoryEntity, EntityManager entityManager) {

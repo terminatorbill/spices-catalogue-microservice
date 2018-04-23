@@ -12,4 +12,6 @@ public interface CategoryRepositoryFacade {
     boolean checkIfCategoryExists(Category category);
 
     void updateCategories(List<Category> categories);
+
+    List<Category> getCategories();
 }

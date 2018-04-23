@@ -1,12 +1,15 @@
 package com.spices.persistence.repository;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 
 import com.spices.domain.Category;
+import com.spices.persistence.model.CategoryEntity;
 import com.spices.persistence.util.TransactionManager;
 
 public class CategoryRepositoryFacadeImpl implements CategoryRepositoryFacade {
@@ -48,6 +51,21 @@ public class CategoryRepositoryFacadeImpl implements CategoryRepositoryFacade {
         transactionManager.doInJPA(entityManager -> {
             categories.forEach(category -> categoryRepository.updateCategory(category, entityManager));
         });
+    }
+
+    @Override
+    public List<Category> getCategories() {
+        return transactionManager.doInJPA(entityManager -> {
+            return categoryRepository.getCategories(entityManager).stream()
+                    .map(this::convertToCategory)
+                    .collect(Collectors.toList());
+        });
+    }
+
+    private Category convertToCategory(CategoryEntity categoryEntity) {
+        return new Category(
+                categoryEntity.getCategoryId(), categoryEntity.getParentCategory().getCategoryId(), categoryEntity.getCategoryName(), categoryEntity.getCategoryDescription(), Collections.emptyList(), Collections.emptyList()
+        );
     }
 
     private boolean checkIfCategoryExists(Category category, EntityManager entityManager) {
