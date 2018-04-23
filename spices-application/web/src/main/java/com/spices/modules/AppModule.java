@@ -4,8 +4,7 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Singleton;
 import com.spices.api.CategoryApi;
 import com.spices.api.converter.CategoryCreationRequestToCategoryConverter;
-import com.spices.persistence.repository.CategoryRepository;
-import com.spices.persistence.repository.CategoryRepositoryImpl;
+import com.spices.api.converter.CategoryToCategoryResponseDtoConverter;
 import com.spices.service.CategoryService;
 import com.spices.service.CategoryServiceImpl;
 
@@ -16,6 +15,7 @@ public class AppModule extends AbstractModule {
         bind(CategoryApi.class);
 
         bind(CategoryCreationRequestToCategoryConverter.class);
+        bind(CategoryToCategoryResponseDtoConverter.class);
 
         bind(CategoryService.class)
                 .to(CategoryServiceImpl.class)

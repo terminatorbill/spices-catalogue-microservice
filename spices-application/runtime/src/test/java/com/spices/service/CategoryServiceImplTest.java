@@ -53,8 +53,8 @@ public class CategoryServiceImplTest {
 
         List<Category> categories = Lists.newArrayList(category1, category2);
 
-        when(categoryRepositoryFacade.checkIfCategoryExists(category1)).thenReturn(false);
-        when(categoryRepositoryFacade.checkIfCategoryExists(category2)).thenReturn(false);
+        when(categoryRepositoryFacade.checkIfCategoryExists(category1.getId())).thenReturn(true);
+        when(categoryRepositoryFacade.checkIfCategoryExists(category2.getId())).thenReturn(true);
 
         categoryService.updateCategories(categories);
 
@@ -136,8 +136,8 @@ public class CategoryServiceImplTest {
 
         List<Category> categories = Lists.newArrayList(category1, category2);
 
-        when(categoryRepositoryFacade.checkIfCategoryExists(category1)).thenReturn(false);
-        when(categoryRepositoryFacade.checkIfCategoryExists(category2)).thenReturn(true);
+        when(categoryRepositoryFacade.checkIfCategoryExists(category1.getId())).thenReturn(false);
+        when(categoryRepositoryFacade.checkIfCategoryExists(category2.getId())).thenReturn(true);
 
         CategoryServiceException ex = assertThrows(CategoryServiceException.class, () -> categoryService.updateCategories(categories));
 

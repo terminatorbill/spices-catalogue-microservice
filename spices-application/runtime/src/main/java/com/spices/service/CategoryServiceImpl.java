@@ -50,7 +50,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     private void checkIfAnyCategoryDoesNotExist(List<Category> categories) {
         categories.stream()
-                .filter(categoryRepositoryFacade::checkIfCategoryExists)
+                .filter(category -> !categoryRepositoryFacade.checkIfCategoryExists(category.getId()))
                 .findAny()
                 .ifPresent(category -> {
                     throw new CategoryServiceException(category.getId().toString(), CategoryServiceException.Type.CATEGORY_DOES_NOT_EXIST);

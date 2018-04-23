@@ -12,7 +12,11 @@ public interface CategoryRepository {
 
     boolean checkIfCategoryExists(String name, EntityManager entityManager);
 
+    boolean checkIfCategoryExists(Long categoryId, EntityManager entityManager);
+
     void updateCategory(Category category, EntityManager entityManager);
 
     List<CategoryEntity> getCategories(EntityManager entityManager);
+
+    CategoryEntity getCategory(Long categoryId, EntityManager entityManager);
 }

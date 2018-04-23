@@ -42,8 +42,8 @@ public class CategoryRepositoryFacadeImpl implements CategoryRepositoryFacade {
     }
 
     @Override
-    public boolean checkIfCategoryExists(Category category) {
-        return transactionManager.doInJPAWithoutTransaction(entityManager -> checkIfCategoryExists(category, entityManager));
+    public boolean checkIfCategoryExists(Long categoryId) {
+        return transactionManager.doInJPAWithoutTransaction(entityManager -> checkIfCategoryExists(categoryId, entityManager));
     }
 
     @Override
@@ -74,5 +74,9 @@ public class CategoryRepositoryFacadeImpl implements CategoryRepositoryFacade {
 
     private boolean checkIfCategoryExists(Category category, EntityManager entityManager) {
         return categoryRepository.checkIfCategoryExists(category.getName(), entityManager);
+    }
+
+    private boolean checkIfCategoryExists(Long categoryId, EntityManager entityManager) {
+        return categoryRepository.checkIfCategoryExists(categoryId, entityManager);
     }
 }
