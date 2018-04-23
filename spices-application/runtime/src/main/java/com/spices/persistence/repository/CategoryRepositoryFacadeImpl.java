@@ -64,8 +64,12 @@ public class CategoryRepositoryFacadeImpl implements CategoryRepositoryFacade {
 
     private Category convertToCategory(CategoryEntity categoryEntity) {
         return new Category(
-                categoryEntity.getCategoryId(), categoryEntity.getParentCategory().getCategoryId(), categoryEntity.getCategoryName(), categoryEntity.getCategoryDescription(), Collections.emptyList(), Collections.emptyList()
+                categoryEntity.getCategoryId(), getParentCategoryIdIfAny(categoryEntity.getParentCategory()), categoryEntity.getCategoryName(), categoryEntity.getCategoryDescription(), Collections.emptyList(), Collections.emptyList()
         );
+    }
+
+    private Long getParentCategoryIdIfAny(CategoryEntity parentCategory) {
+        return parentCategory != null ? parentCategory.getCategoryId() : null;
     }
 
     private boolean checkIfCategoryExists(Category category, EntityManager entityManager) {
