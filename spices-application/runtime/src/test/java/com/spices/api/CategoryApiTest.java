@@ -132,11 +132,20 @@ public class CategoryApiTest {
     @DisplayName("should delete all the provided categories")
     @Test
     public void shouldDeleteAllTheProvidedCategories() {
-        List<Long> categoryIds = Lists.newArrayList(1L, 2L, 3L);
+        String categoryIds = "1, 2,3";
+
+        ArgumentCaptor<List<Long>> argumentCaptor = ArgumentCaptor.forClass(List.class);
 
         categoryApi.deleteCategories(categoryIds);
 
-        verify(categoryService, times(1)).deleteCategories(categoryIds);
+        verify(categoryService, times(1)).deleteCategories(argumentCaptor.capture());
+
+        List<Long> categories = argumentCaptor.getValue();
+
+        assertThat(categories.size(), is(3));
+        assertThat(categories.get(0), is(1L));
+        assertThat(categories.get(1), is(2L));
+        assertThat(categories.get(2), is(3L));
     }
 
     @DisplayName("should throw CategoryAlreadyExistsException when a CategoryServiceException with code DUPLICATE_CATEGORY is thrown when creating a new category")
@@ -209,11 +218,11 @@ public class CategoryApiTest {
     @DisplayName("should throw CannotDeleteParentCategoryException when any of the provided categories to delete is a parent category")
     @Test
     public void shouldThrowCannotDeleteParentCategoryException() {
-        List<Long> categoryIds = Lists.newArrayList(1L, 2L);
+        String categoryIds = "1, 2,3";
 
-        doThrow(new CategoryServiceException("foo", CategoryServiceException.Type.CANNOT_DELETE_PARENT_CATEGORY)).when(categoryService).deleteCategories(categoryIds);
+        doThrow(new CategoryServiceException("foo", CategoryServiceException.Type.CANNOT_DELETE_PARENT_CATEGORY)).when(categoryService).deleteCategories(anyList());
 
         assertThrows(CannotDeleteParentCategoryException.class, () -> categoryApi.deleteCategories(categoryIds));
-        verify(categoryService, times(1)).deleteCategories(categoryIds);
+        verify(categoryService, times(1)).deleteCategories(anyList());
     }
 }

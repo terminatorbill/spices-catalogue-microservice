@@ -1,6 +1,8 @@
 package com.spices.api;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
@@ -10,6 +12,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -71,9 +74,14 @@ public class CategoryApi {
     }
 
     @DELETE
-    public void deleteCategories(List<Long> categoryIds) {
+    public void deleteCategories(@QueryParam("categoryIds") String categoryIds) {
         try {
-            categoryService.deleteCategories(categoryIds);
+            categoryService.deleteCategories(
+                    Arrays.stream(categoryIds.split(","))
+                            .map(String::trim)
+                            .map(Long::parseLong)
+                            .collect(Collectors.toList())
+            );
         } catch (CategoryServiceException e) {
             switch (e.getType()) {
                 case CANNOT_DELETE_PARENT_CATEGORY:
