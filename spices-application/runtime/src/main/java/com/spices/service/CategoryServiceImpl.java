@@ -44,7 +44,11 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public void deleteCategories(List<Long> categoryIds) {
-
+        boolean someCategoryIsParent = checkIfAnyCategoryIsParent(categoryIds);
+        if (someCategoryIsParent) {
+            throw new CategoryServiceException("Cannot delete parent categories", CategoryServiceException.Type.CANNOT_DELETE_PARENT_CATEGORY);
+        }
+        categoryRepositoryFacade.deleteCategories(categoryIds);
     }
 
     private void checkIfAnyCategoryExists(Category category) {
@@ -60,5 +64,9 @@ public class CategoryServiceImpl implements CategoryService {
                 .ifPresent(category -> {
                     throw new CategoryServiceException(category.getId().toString(), CategoryServiceException.Type.CATEGORY_DOES_NOT_EXIST);
                 });
+    }
+
+    private boolean checkIfAnyCategoryIsParent(List<Long> categoryIds) {
+        return categoryRepositoryFacade.checkIfAnyCategoryHasSubCategories(categoryIds);
     }
 }

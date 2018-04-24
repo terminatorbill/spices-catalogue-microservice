@@ -78,7 +78,7 @@ public class CategoryApi {
             switch (e.getType()) {
                 case CANNOT_DELETE_PARENT_CATEGORY:
                 default:
-                    throw new CannotDeleteParentCategoryException(String.format("Category with id %s is already a parent category", e.getMessage()));
+                    throw new CannotDeleteParentCategoryException("Cannot delete categories with subcategories");
             }
         }
     }
