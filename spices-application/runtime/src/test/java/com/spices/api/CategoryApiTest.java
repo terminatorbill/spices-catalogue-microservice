@@ -13,7 +13,6 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.util.Collections;
 import java.util.List;
 
 import javax.ws.rs.core.Response;
@@ -28,6 +27,7 @@ import com.spices.api.converter.CategoryCreationRequestToCategoryConverter;
 import com.spices.api.dto.CategoryCreationRequestDto;
 import com.spices.api.dto.CategoryResponseDto;
 import com.spices.api.dto.CategoryUpdateRequestDto;
+import com.spices.api.exception.CannotDeleteParentCategoryException;
 import com.spices.api.exception.CategoryAlreadyExistsException;
 import com.spices.api.exception.CategoryDoesNotExistsException;
 import com.spices.domain.Category;
@@ -129,6 +129,16 @@ public class CategoryApiTest {
 
     }
 
+    @DisplayName("should delete all the provided categories")
+    @Test
+    public void shouldDeleteAllTheProvidedCategories() {
+        List<Long> categoryIds = Lists.newArrayList(1L, 2L, 3L);
+
+        categoryApi.deleteCategories(categoryIds);
+
+        verify(categoryService, times(1)).deleteCategories(categoryIds);
+    }
+
     @DisplayName("should throw CategoryAlreadyExistsException when a CategoryServiceException with code DUPLICATE_CATEGORY is thrown when creating a new category")
     @Test
     public void shouldThrowCategoryExistsException() {
@@ -194,5 +204,16 @@ public class CategoryApiTest {
         assertThat(categories.get(1).getParentCategoryId(), is(nullValue()));
         assertThat(categories.get(1).getProducts(), is(empty()));
         assertThat(categories.get(1).getSubCategories(), is(empty()));
+    }
+
+    @DisplayName("should throw CannotDeleteParentCategoryException when any of the provided categories to delete is a parent category")
+    @Test
+    public void shouldThrowCannotDeleteParentCategoryException() {
+        List<Long> categoryIds = Lists.newArrayList(1L, 2L);
+
+        doThrow(new CategoryServiceException("foo", CategoryServiceException.Type.CANNOT_DELETE_PARENT_CATEGORY)).when(categoryService).deleteCategories(categoryIds);
+
+        assertThrows(CannotDeleteParentCategoryException.class, () -> categoryApi.deleteCategories(categoryIds));
+        verify(categoryService, times(1)).deleteCategories(categoryIds);
     }
 }

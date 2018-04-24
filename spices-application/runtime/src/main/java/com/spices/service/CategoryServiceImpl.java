@@ -42,6 +42,11 @@ public class CategoryServiceImpl implements CategoryService {
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public void deleteCategories(List<Long> categoryIds) {
+
+    }
+
     private void checkIfAnyCategoryExists(Category category) {
         categoryRepositoryFacade.checkAndReturnAnyExistingCategory(category).ifPresent(categoryName -> {
                 throw new CategoryServiceException(categoryName, CategoryServiceException.Type.DUPLICATE_CATEGORY);

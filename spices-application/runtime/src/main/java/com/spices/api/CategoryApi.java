@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -16,6 +17,7 @@ import com.spices.api.converter.CategoryCreationRequestToCategoryConverter;
 import com.spices.api.dto.CategoryCreationRequestDto;
 import com.spices.api.dto.CategoryResponseDto;
 import com.spices.api.dto.CategoryUpdateRequestDto;
+import com.spices.api.exception.CannotDeleteParentCategoryException;
 import com.spices.api.exception.CategoryAlreadyExistsException;
 import com.spices.api.exception.CategoryDoesNotExistsException;
 import com.spices.service.CategoryService;
@@ -66,5 +68,18 @@ public class CategoryApi {
     @GET
     public List<CategoryResponseDto> retrieveCategories() {
         return categoryService.retrieveCategories();
+    }
+
+    @DELETE
+    public void deleteCategories(List<Long> categoryIds) {
+        try {
+            categoryService.deleteCategories(categoryIds);
+        } catch (CategoryServiceException e) {
+            switch (e.getType()) {
+                case CANNOT_DELETE_PARENT_CATEGORY:
+                default:
+                    throw new CannotDeleteParentCategoryException(String.format("Category with id %s is already a parent category", e.getMessage()));
+            }
+        }
     }
 }

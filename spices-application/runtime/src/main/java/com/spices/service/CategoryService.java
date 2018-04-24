@@ -12,4 +12,6 @@ public interface CategoryService {
     void updateCategories(List<Category> categories);
 
     List<CategoryResponseDto> retrieveCategories();
+
+    void deleteCategories(List<Long> categoryIds);
 }
