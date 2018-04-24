@@ -53,6 +53,20 @@ public class CategoryRepositoryImpl implements CategoryRepository {
                 .getSingleResult();
     }
 
+    @Override
+    public boolean checkIfCategoryHasSubCategories(Long categoryId, EntityManager entityManager) {
+        return entityManager.createQuery("SELECT COUNT(c.categoryId) FROM CategoryEntity c WHERE c.parentCategory.categoryId = :categoryId", Long.class)
+                .setParameter("categoryId", categoryId)
+                .getSingleResult() != 0;
+    }
+
+    @Override
+    public void deleteCategories(List<Long> categoryIds, EntityManager entityManager) {
+        entityManager.createQuery("DELETE FROM CategoryEntity c WHERE c.categoryId IN (:categoryIds)")
+                .setParameter("categoryIds", categoryIds)
+                .executeUpdate();
+    }
+
     private void persistCategories(Category category, CategoryEntity parentCategoryEntity, EntityManager entityManager) {
         entityManager.persist(parentCategoryEntity);
         persistSubCategoriesIfAny(category, parentCategoryEntity, entityManager);

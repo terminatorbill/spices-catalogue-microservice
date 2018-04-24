@@ -14,4 +14,8 @@ public interface CategoryRepositoryFacade {
     void updateCategories(List<Category> categories);
 
     List<Category> getCategories();
+
+    boolean checkIfAnyCategoryHasSubCategories(List<Long> categoryIds);
+
+    void deleteCategories(List<Long> categoryIds);
 }

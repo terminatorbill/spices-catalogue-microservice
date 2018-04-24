@@ -62,6 +62,20 @@ public class CategoryRepositoryFacadeImpl implements CategoryRepositoryFacade {
         });
     }
 
+    @Override
+    public boolean checkIfAnyCategoryHasSubCategories(List<Long> categoryIds) {
+        return transactionManager.doInJPAWithoutTransaction(entityManager -> categoryIds.stream()
+                .anyMatch(categoryId -> categoryRepository.checkIfCategoryHasSubCategories(categoryId, entityManager))
+        );
+    }
+
+    @Override
+    public void deleteCategories(List<Long> categoryIds) {
+        transactionManager.doInJPA(entityManager -> {
+            categoryRepository.deleteCategories(categoryIds, entityManager);
+        });
+    }
+
     private Category convertToCategory(CategoryEntity categoryEntity) {
         return new Category(
                 categoryEntity.getCategoryId(), getParentCategoryIdIfAny(categoryEntity.getParentCategory()), categoryEntity.getCategoryName(), categoryEntity.getCategoryDescription(), Collections.emptyList(), Collections.emptyList()
