@@ -24,16 +24,16 @@ public class CategoryRepositoryFacadeImpl implements CategoryRepositoryFacade {
     }
 
     @Override
-    public void createCategory(Category category) {
+    public void createCategories(List<Category> categories) {
         transactionManager.doInJPA(entityManager -> {
-            categoryRepository.createCategory(category, entityManager);
+            categories.forEach(category -> categoryRepository.createCategory(category, entityManager));
         });
     }
 
     @Override
-    public Optional<String> checkAndReturnAnyExistingCategory(Category category) {
+    public Optional<String> checkAndReturnAnyExistingCategory(List<Category> categories) {
         return transactionManager.doInJPAWithoutTransaction(entityManager -> {
-            Optional<Category> potentialPresentCategory = category.flattened()
+            Optional<Category> potentialPresentCategory = categories.stream()
                 .filter(c -> checkIfCategoryExists(c, entityManager))
                 .findFirst();
 
@@ -78,7 +78,7 @@ public class CategoryRepositoryFacadeImpl implements CategoryRepositoryFacade {
 
     private Category convertToCategory(CategoryEntity categoryEntity) {
         return new Category(
-                categoryEntity.getCategoryId(), getParentCategoryIdIfAny(categoryEntity.getParentCategory()), categoryEntity.getCategoryName(), categoryEntity.getCategoryDescription(), Collections.emptyList(), Collections.emptyList()
+                categoryEntity.getCategoryId(), getParentCategoryIdIfAny(categoryEntity.getParentCategory()), categoryEntity.getCategoryName(), categoryEntity.getCategoryDescription(), Collections.emptyList()
         );
     }
 

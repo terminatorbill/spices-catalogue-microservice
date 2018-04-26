@@ -1,7 +1,6 @@
 package com.spices.domain;
 
 import java.util.List;
-import java.util.stream.Stream;
 
 public class Category {
     private final Long id;
@@ -9,15 +8,13 @@ public class Category {
     private final String name;
     private final String description;
     private final List<Product> products;
-    private final List<Category> subCategories;
 
-    public Category(Long id, Long parentCategoryId, String name, String description, List<Product> products, List<Category> subCategories) {
+    public Category(Long id, Long parentCategoryId, String name, String description, List<Product> products) {
         this.id = id;
         this.parentCategoryId = parentCategoryId;
         this.name = name;
         this.description = description;
         this.products = products;
-        this.subCategories = subCategories;
     }
 
     public Long getId() {
@@ -38,15 +35,5 @@ public class Category {
 
     public List<Product> getProducts() {
         return products;
-    }
-
-    public List<Category> getSubCategories() {
-        return subCategories;
-    }
-
-    public Stream<Category> flattened() {
-        return Stream.concat(
-            Stream.of(this), subCategories.stream().flatMap(Category::flattened)
-        );
     }
 }

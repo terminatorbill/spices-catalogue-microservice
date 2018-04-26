@@ -31,24 +31,26 @@ public class CategoryServiceImplTest {
     @Test
     public void shouldCreateANewCategory() {
         Category category = new Category(
-                null, null, "Foo", "Foo description", Collections.emptyList(), Collections.emptyList()
+                null, null, "Foo", "Foo description", Collections.emptyList()
         );
 
-        categoryService.createCategories(category);
-        when(categoryRepositoryFacade.checkAndReturnAnyExistingCategory(category)).thenReturn(Optional.empty());
+        List<Category> categories = Lists.newArrayList(category);
 
-        verify(categoryRepositoryFacade, times(1)).createCategory(category);
+        categoryService.createCategories(categories);
+        when(categoryRepositoryFacade.checkAndReturnAnyExistingCategory(categories)).thenReturn(Optional.empty());
+
+        verify(categoryRepositoryFacade, times(1)).createCategories(categories);
     }
 
     @DisplayName("should update the provided categories")
     @Test
     public void shouldUpdateCategories() {
         Category category1 = new Category(
-                1L, null, "Foo", "Foo description", Collections.emptyList(), Collections.emptyList()
+                1L, null, "Foo", "Foo description", Collections.emptyList()
         );
 
         Category category2 = new Category(
-                2L, null, "Bar", "Bar description", Collections.emptyList(), Collections.emptyList()
+                2L, null, "Bar", "Bar description", Collections.emptyList()
         );
 
         List<Category> categories = Lists.newArrayList(category1, category2);
@@ -84,7 +86,6 @@ public class CategoryServiceImplTest {
                 null,
                 "foo",
                 "foo description",
-                Collections.emptyList(),
                 Collections.emptyList()
         );
 
@@ -93,7 +94,6 @@ public class CategoryServiceImplTest {
                 1L,
                 "bar",
                 "bar description",
-                Collections.emptyList(),
                 Collections.emptyList()
         );
 
@@ -134,28 +134,30 @@ public class CategoryServiceImplTest {
     @Test
     public void shouldThrowDuplicateCategoryWhenCreatingCategory() {
         Category category = new Category(
-                null, null, "Foo", "Foo description", Collections.emptyList(), Collections.emptyList()
+                null, null, "Foo", "Foo description", Collections.emptyList()
         );
 
-        categoryService.createCategories(category);
-        when(categoryRepositoryFacade.checkAndReturnAnyExistingCategory(category)).thenReturn(Optional.of("Foo"));
+        List<Category> categories = Lists.newArrayList(category);
 
-        CategoryServiceException ex = assertThrows(CategoryServiceException.class, () -> categoryService.createCategories(category));
+        categoryService.createCategories(categories);
+        when(categoryRepositoryFacade.checkAndReturnAnyExistingCategory(categories)).thenReturn(Optional.of("Foo"));
+
+        CategoryServiceException ex = assertThrows(CategoryServiceException.class, () -> categoryService.createCategories(categories));
 
         assertThat(ex.getType(), is(CategoryServiceException.Type.DUPLICATE_CATEGORY));
 
-        verify(categoryRepositoryFacade, times(1)).createCategory(category);
+        verify(categoryRepositoryFacade, times(1)).createCategories(categories);
     }
 
     @DisplayName("should throw CategoryServiceException with code CATEGORY_DOES_NOT_EXIST when updating the provided categories and any category does not exist")
     @Test
     public void shouldThrowCategoryDoesNotExistsWhenUpdatingCategories() {
         Category category1 = new Category(
-                1L, null, "Foo", "Foo description", Collections.emptyList(), Collections.emptyList()
+                1L, null, "Foo", "Foo description", Collections.emptyList()
         );
 
         Category category2 = new Category(
-                2L, null, "Bar", "Bar description", Collections.emptyList(), Collections.emptyList()
+                2L, null, "Bar", "Bar description", Collections.emptyList()
         );
 
         List<Category> categories = Lists.newArrayList(category1, category2);

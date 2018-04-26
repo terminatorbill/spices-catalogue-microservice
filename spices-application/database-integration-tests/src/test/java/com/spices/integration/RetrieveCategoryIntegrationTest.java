@@ -49,7 +49,7 @@ public class RetrieveCategoryIntegrationTest {
                 )
         );
 
-        categoryRepositoryFacade.createCategory(category);
+        categoryRepositoryFacade.createCategories(category);
 
         List<Category> actualCategories = categoryRepositoryFacade.getCategories();
 

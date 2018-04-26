@@ -11,8 +11,10 @@ public class CategoryRepositoryImpl implements CategoryRepository {
 
     @Override
     public void createCategory(Category category, EntityManager entityManager) {
-        CategoryEntity parentCategoryEntity = createCategoryEntity(category, null);
-        persistCategories(category, parentCategoryEntity, entityManager);
+        CategoryEntity parentCategoryEntity = entityManager.find(CategoryEntity.class, category.getParentCategoryId());
+
+        CategoryEntity categoryEntity = createCategoryEntity(category, parentCategoryEntity);
+        entityManager.persist(categoryEntity);
     }
 
     @Override
@@ -65,20 +67,6 @@ public class CategoryRepositoryImpl implements CategoryRepository {
         entityManager.createQuery("DELETE FROM CategoryEntity c WHERE c.categoryId IN (:categoryIds)")
                 .setParameter("categoryIds", categoryIds)
                 .executeUpdate();
-    }
-
-    private void persistCategories(Category category, CategoryEntity parentCategoryEntity, EntityManager entityManager) {
-        entityManager.persist(parentCategoryEntity);
-        persistSubCategoriesIfAny(category, parentCategoryEntity, entityManager);
-    }
-
-    private void persistSubCategoriesIfAny(Category category, CategoryEntity parentCategoryEntity, EntityManager entityManager) {
-        for (int i = 0; i < category.getSubCategories().size(); i++) {
-            Category subcategory = category.getSubCategories().get(i);
-            CategoryEntity subCategoryEntity = createCategoryEntity(subcategory, parentCategoryEntity);
-            entityManager.persist(subCategoryEntity);
-            persistSubCategoriesIfAny(subcategory, subCategoryEntity, entityManager);
-        }
     }
 
     private CategoryEntity createCategoryEntity(Category category, CategoryEntity parentCategory) {

@@ -42,7 +42,7 @@ public class AddCategoryIntegrationTest {
             null, null, generateRandomString(5), "Foo description", Collections.emptyList(), Collections.emptyList()
         );
 
-        categoryRepositoryFacade.createCategory(category);
+        categoryRepositoryFacade.createCategories(category);
 
         Assertions.assertThat(categoryRepositoryFacade.checkAndReturnAnyExistingCategory(category)).isNotEmpty();
     }
@@ -57,7 +57,7 @@ public class AddCategoryIntegrationTest {
                 )
         );
 
-        categoryRepositoryFacade.createCategory(category);
+        categoryRepositoryFacade.createCategories(category);
 
         Assertions.assertThat(categoryRepositoryFacade.checkAndReturnAnyExistingCategory(category)).isNotEmpty();
         Assertions.assertThat(categoryRepositoryFacade.checkAndReturnAnyExistingCategory(category.getSubCategories().get(0))).isNotEmpty();
@@ -75,7 +75,7 @@ public class AddCategoryIntegrationTest {
             )
         );
 
-        categoryRepositoryFacade.createCategory(category);
+        categoryRepositoryFacade.createCategories(category);
 
         Assertions.assertThat(categoryRepositoryFacade.checkAndReturnAnyExistingCategory(category)).isNotEmpty();
         Assertions.assertThat(categoryRepositoryFacade.checkAndReturnAnyExistingCategory(category.getSubCategories().get(0))).isNotEmpty();

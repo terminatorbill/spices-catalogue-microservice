@@ -3,13 +3,11 @@ package com.spices.api;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.Matchers.empty;
-import static org.hamcrest.Matchers.hasSize;
 import static org.junit.Assert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -27,6 +25,7 @@ import org.mockito.Mockito;
 
 import com.spices.api.converter.CategoryCreationRequestToCategoryConverter;
 import com.spices.api.dto.CategoryCreationRequestDto;
+import com.spices.api.dto.CategoryRequestDto;
 import com.spices.api.dto.CategoryResponseDto;
 import com.spices.api.dto.CategoryUpdateRequestDto;
 import com.spices.api.exception.CannotDeleteParentCategoryException;
@@ -41,36 +40,57 @@ public class CategoryApiTest {
     private final CategoryCreationRequestToCategoryConverter toCategoryConverter = new CategoryCreationRequestToCategoryConverter();
     private final CategoryApi categoryApi = new CategoryApi(categoryService, toCategoryConverter);
 
-    @DisplayName("should create a new category along with any subcategories and return a 201 Response")
+    @DisplayName("should create a new category without a parent category and return a 201 Response")
     @Test
     public void shouldCreateCategories() {
-        CategoryCreationRequestDto categoryCreationRequestDto = new CategoryCreationRequestDto(
-            "Parent Category", "Sample description", Lists.newArrayList(
-            new CategoryCreationRequestDto(
-                "Child Category", "Sample child description", null
-            )
-        ));
+        CategoryCreationRequestDto categoryCreationRequestDto = new CategoryCreationRequestDto();
+        categoryCreationRequestDto.setCategories(Lists.newArrayList(new CategoryRequestDto("Category", "Description", null)));
 
-        ArgumentCaptor<Category> argumentCaptor = ArgumentCaptor.forClass(Category.class);
+        ArgumentCaptor<List<Category>> argumentCaptor = ArgumentCaptor.forClass(List.class);
 
         Response response = categoryApi.createCategories(categoryCreationRequestDto);
         assertThat(response.getStatus(), is(Response.Status.CREATED.getStatusCode()));
 
         verify(categoryService, times(1)).createCategories(argumentCaptor.capture());
-        Category category = argumentCaptor.getValue();
-        assertThat(category.getId(), is(nullValue()));
-        assertThat(category.getParentCategoryId(), is(nullValue()));
-        assertThat(category.getName(), is(categoryCreationRequestDto.getName()));
-        assertThat(category.getDescription(), is(categoryCreationRequestDto.getDescription()));
-        assertThat(category.getProducts(), is(empty()));
-        assertThat(category.getSubCategories(), hasSize(1));
-        assertThat(category.getSubCategories().get(0).getId(), is(nullValue()));
-        assertThat(category.getSubCategories().get(0).getParentCategoryId(), is(nullValue()));
-        assertThat(category.getSubCategories().get(0).getName(), is(categoryCreationRequestDto.getSubCategories().get(0).getName()));
-        assertThat(category.getSubCategories().get(0).getDescription(), is(categoryCreationRequestDto.getSubCategories().get(0).getDescription()));
-        assertThat(category.getSubCategories().get(0).getProducts(), is(empty()));
-        assertThat(category.getSubCategories().get(0).getSubCategories(), is(empty()));
+        List<Category> categories = argumentCaptor.getValue();
+        assertThat(categories.size(), is(1));
+        assertThat(categories.get(0).getId(), is(nullValue()));
+        assertThat(categories.get(0).getParentCategoryId(), is(nullValue()));
+        assertThat(categories.get(0).getName(), is(categoryCreationRequestDto.getCategories().get(0).getName()));
+        assertThat(categories.get(0).getDescription(), is(categoryCreationRequestDto.getCategories().get(0).getDescription()));
+        assertThat(categories.get(0).getProducts(), is(empty()));
+    }
 
+    @DisplayName("should create a new category without a parent category and a new subcategory of an existing category and return a 201 Response")
+    @Test
+    public void shouldCreateCategoriesWithSubCategories() {
+        CategoryCreationRequestDto categoryCreationRequestDto = new CategoryCreationRequestDto();
+        categoryCreationRequestDto.setCategories(
+                Lists.newArrayList(
+                        new CategoryRequestDto("Category", "Description", null),
+                        new CategoryRequestDto("Category2", "Description", 1L)
+                )
+        );
+
+        ArgumentCaptor<List<Category>> argumentCaptor = ArgumentCaptor.forClass(List.class);
+
+        Response response = categoryApi.createCategories(categoryCreationRequestDto);
+        assertThat(response.getStatus(), is(Response.Status.CREATED.getStatusCode()));
+
+        verify(categoryService, times(1)).createCategories(argumentCaptor.capture());
+        List<Category> categories = argumentCaptor.getValue();
+        assertThat(categories.size(), is(2));
+        assertThat(categories.get(0).getId(), is(nullValue()));
+        assertThat(categories.get(0).getParentCategoryId(), is(nullValue()));
+        assertThat(categories.get(0).getName(), is(categoryCreationRequestDto.getCategories().get(0).getName()));
+        assertThat(categories.get(0).getDescription(), is(categoryCreationRequestDto.getCategories().get(0).getDescription()));
+        assertThat(categories.get(0).getProducts(), is(empty()));
+
+        assertThat(categories.get(1).getId(), is(nullValue()));
+        assertThat(categories.get(1).getParentCategoryId(), is(1L));
+        assertThat(categories.get(1).getName(), is(categoryCreationRequestDto.getCategories().get(1).getName()));
+        assertThat(categories.get(1).getDescription(), is(categoryCreationRequestDto.getCategories().get(1).getDescription()));
+        assertThat(categories.get(1).getProducts(), is(empty()));
     }
 
     @DisplayName("should update all provided categories and return a 201 Response")
@@ -95,14 +115,12 @@ public class CategoryApiTest {
         assertThat(categories.get(0).getDescription(), is(updateRequestDtos.get(0).getDescription()));
         assertThat(categories.get(0).getParentCategoryId(), is(nullValue()));
         assertThat(categories.get(0).getProducts(), is(empty()));
-        assertThat(categories.get(0).getSubCategories(), is(empty()));
 
         assertThat(categories.get(1).getId(), is(updateRequestDtos.get(1).getId()));
         assertThat(categories.get(1).getName(), is(updateRequestDtos.get(1).getName()));
         assertThat(categories.get(1).getDescription(), is(updateRequestDtos.get(1).getDescription()));
         assertThat(categories.get(1).getParentCategoryId(), is(nullValue()));
         assertThat(categories.get(1).getProducts(), is(empty()));
-        assertThat(categories.get(1).getSubCategories(), is(empty()));
     }
 
     @DisplayName("should retrieve all categories and return a 200 Response")
@@ -153,34 +171,30 @@ public class CategoryApiTest {
     @DisplayName("should throw CategoryAlreadyExistsException when a CategoryServiceException with code DUPLICATE_CATEGORY is thrown when creating a new category")
     @Test
     public void shouldThrowCategoryExistsException() {
-        CategoryCreationRequestDto categoryCreationRequestDto = new CategoryCreationRequestDto(
-            "Parent Category", "Sample description", Lists.newArrayList(
-            new CategoryCreationRequestDto(
-                "Child Category", "Sample child description", null
-            )
-        ));
+        CategoryCreationRequestDto categoryCreationRequestDto = new CategoryCreationRequestDto();
+        categoryCreationRequestDto.setCategories(
+                Lists.newArrayList(
+                        new CategoryRequestDto("Category", "Description", null)
+                )
+        );
 
-        doThrow(new CategoryServiceException("foo", CategoryServiceException.Type.DUPLICATE_CATEGORY)).when(categoryService).createCategories(any(Category.class));
+        doThrow(new CategoryServiceException("foo", CategoryServiceException.Type.DUPLICATE_CATEGORY)).when(categoryService).createCategories(anyList());
 
-        ArgumentCaptor<Category> argumentCaptor = ArgumentCaptor.forClass(Category.class);
+        ArgumentCaptor<List<Category>> argumentCaptor = ArgumentCaptor.forClass(List.class);
 
         assertThrows(CategoryAlreadyExistsException.class, () -> categoryApi.createCategories(categoryCreationRequestDto));
 
         verify(categoryService, times(1)).createCategories(argumentCaptor.capture());
 
-        Category category = argumentCaptor.getValue();
-        assertThat(category.getId(), is(nullValue()));
-        assertThat(category.getParentCategoryId(), is(nullValue()));
-        assertThat(category.getName(), is(categoryCreationRequestDto.getName()));
-        assertThat(category.getDescription(), is(categoryCreationRequestDto.getDescription()));
-        assertThat(category.getProducts(), is(empty()));
-        assertThat(category.getSubCategories(), hasSize(1));
-        assertThat(category.getSubCategories().get(0).getId(), is(nullValue()));
-        assertThat(category.getSubCategories().get(0).getParentCategoryId(), is(nullValue()));
-        assertThat(category.getSubCategories().get(0).getName(), is(categoryCreationRequestDto.getSubCategories().get(0).getName()));
-        assertThat(category.getSubCategories().get(0).getDescription(), is(categoryCreationRequestDto.getSubCategories().get(0).getDescription()));
-        assertThat(category.getSubCategories().get(0).getProducts(), is(empty()));
-        assertThat(category.getSubCategories().get(0).getSubCategories(), is(empty()));
+        List<Category> categories = argumentCaptor.getValue();
+
+        assertThat(categories.size(), is(1));
+
+        assertThat(categories.get(0).getId(), is(nullValue()));
+        assertThat(categories.get(0).getParentCategoryId(), is(nullValue()));
+        assertThat(categories.get(0).getName(), is(categoryCreationRequestDto.getCategories().get(0).getName()));
+        assertThat(categories.get(0).getDescription(), is(categoryCreationRequestDto.getCategories().get(0).getDescription()));
+        assertThat(categories.get(0).getProducts(), is(empty()));
     }
 
     @DisplayName("should throw CategoryDoesNotExistsException when a CategoryServiceException with code CATEGORY_DOES_NOT_EXISTS is thrown when updating categories and any category does not exist")
@@ -207,14 +221,12 @@ public class CategoryApiTest {
         assertThat(categories.get(0).getDescription(), is(updateRequestDtos.get(0).getDescription()));
         assertThat(categories.get(0).getParentCategoryId(), is(nullValue()));
         assertThat(categories.get(0).getProducts(), is(empty()));
-        assertThat(categories.get(0).getSubCategories(), is(empty()));
 
         assertThat(categories.get(1).getId(), is(updateRequestDtos.get(1).getId()));
         assertThat(categories.get(1).getName(), is(updateRequestDtos.get(1).getName()));
         assertThat(categories.get(1).getDescription(), is(updateRequestDtos.get(1).getDescription()));
         assertThat(categories.get(1).getParentCategoryId(), is(nullValue()));
         assertThat(categories.get(1).getProducts(), is(empty()));
-        assertThat(categories.get(1).getSubCategories(), is(empty()));
     }
 
     @DisplayName("should throw CannotDeleteParentCategoryException when any of the provided categories to delete is a parent category")

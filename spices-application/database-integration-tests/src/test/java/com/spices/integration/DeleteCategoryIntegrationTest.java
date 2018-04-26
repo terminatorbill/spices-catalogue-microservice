@@ -49,8 +49,8 @@ public class DeleteCategoryIntegrationTest {
                 null, null, generateRandomString(5), "Bar description", Collections.emptyList(), Collections.emptyList()
         );
 
-        categoryRepositoryFacade.createCategory(category1);
-        categoryRepositoryFacade.createCategory(category2);
+        categoryRepositoryFacade.createCategories(category1);
+        categoryRepositoryFacade.createCategories(category2);
 
         Assertions.assertThat(categoryRepositoryFacade.checkAndReturnAnyExistingCategory(category1)).isNotEmpty();
         Assertions.assertThat(categoryRepositoryFacade.checkAndReturnAnyExistingCategory(category2)).isNotEmpty();
