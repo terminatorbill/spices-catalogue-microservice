@@ -19,4 +19,8 @@ public interface CategoryRepository {
     List<CategoryEntity> getCategories(EntityManager entityManager);
 
     CategoryEntity getCategory(Long categoryId, EntityManager entityManager);
+
+    boolean checkIfCategoryHasSubCategories(Long categoryId, EntityManager entityManager);
+
+    void deleteCategories(List<Long> categoryIds, EntityManager entityManager);
 }

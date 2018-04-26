@@ -6,14 +6,15 @@ import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.Assert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.util.Collections;
 import java.util.List;
 
 import javax.ws.rs.core.Response;
@@ -28,6 +29,7 @@ import com.spices.api.converter.CategoryCreationRequestToCategoryConverter;
 import com.spices.api.dto.CategoryCreationRequestDto;
 import com.spices.api.dto.CategoryResponseDto;
 import com.spices.api.dto.CategoryUpdateRequestDto;
+import com.spices.api.exception.CannotDeleteParentCategoryException;
 import com.spices.api.exception.CategoryAlreadyExistsException;
 import com.spices.api.exception.CategoryDoesNotExistsException;
 import com.spices.domain.Category;
@@ -129,6 +131,25 @@ public class CategoryApiTest {
 
     }
 
+    @DisplayName("should delete all the provided categories")
+    @Test
+    public void shouldDeleteAllTheProvidedCategories() {
+        String categoryIds = "1, 2,3";
+
+        ArgumentCaptor<List<Long>> argumentCaptor = ArgumentCaptor.forClass(List.class);
+
+        categoryApi.deleteCategories(categoryIds);
+
+        verify(categoryService, times(1)).deleteCategories(argumentCaptor.capture(), eq(false));
+
+        List<Long> categories = argumentCaptor.getValue();
+
+        assertThat(categories.size(), is(3));
+        assertThat(categories.get(0), is(1L));
+        assertThat(categories.get(1), is(2L));
+        assertThat(categories.get(2), is(3L));
+    }
+
     @DisplayName("should throw CategoryAlreadyExistsException when a CategoryServiceException with code DUPLICATE_CATEGORY is thrown when creating a new category")
     @Test
     public void shouldThrowCategoryExistsException() {
@@ -194,5 +215,16 @@ public class CategoryApiTest {
         assertThat(categories.get(1).getParentCategoryId(), is(nullValue()));
         assertThat(categories.get(1).getProducts(), is(empty()));
         assertThat(categories.get(1).getSubCategories(), is(empty()));
+    }
+
+    @DisplayName("should throw CannotDeleteParentCategoryException when any of the provided categories to delete is a parent category")
+    @Test
+    public void shouldThrowCannotDeleteParentCategoryException() {
+        String categoryIds = "1, 2,3";
+
+        doThrow(new CategoryServiceException("foo", CategoryServiceException.Type.CANNOT_DELETE_PARENT_CATEGORY)).when(categoryService).deleteCategories(anyList(), eq(false));
+
+        assertThrows(CannotDeleteParentCategoryException.class, () -> categoryApi.deleteCategories(categoryIds));
+        verify(categoryService, times(1)).deleteCategories(anyList(), anyBoolean());
     }
 }

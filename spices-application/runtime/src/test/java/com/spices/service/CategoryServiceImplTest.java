@@ -106,6 +106,30 @@ public class CategoryServiceImplTest {
         assertThat(actualCategories.get(1), is(expectedCategories.get(1)));
     }
 
+    @DisplayName("should delete all the provided categories in case when no category has subcategories")
+    @Test
+    public void shouldDeleteAllProvidedCategories() {
+        List<Long> categoryIds = Lists.newArrayList(1L, 2L);
+
+        categoryService.deleteCategories(categoryIds, false);
+
+        when(categoryRepositoryFacade.checkIfAnyCategoryHasSubCategories(categoryIds)).thenReturn(false);
+
+        verify(categoryRepositoryFacade, times(1)).checkIfAnyCategoryHasSubCategories(categoryIds);
+        verify(categoryRepositoryFacade, times(1)).deleteCategories(categoryIds);
+    }
+
+    @DisplayName("should delete all the provided categories in case when any category has subcategories when the flag deleteParentCategories is set to true")
+    @Test
+    public void shouldDeleteAllProvidedCategoriesEvenWithSubCategories() {
+        List<Long> categoryIds = Lists.newArrayList(1L, 2L);
+
+        categoryService.deleteCategories(categoryIds, true);
+
+        verify(categoryRepositoryFacade, times(0)).checkIfAnyCategoryHasSubCategories(categoryIds);
+        verify(categoryRepositoryFacade, times(1)).deleteCategories(categoryIds);
+    }
+
     @DisplayName("should throw CategoryServiceException with code DUPLICATE_CATEGORY when creating a category that already exists")
     @Test
     public void shouldThrowDuplicateCategoryWhenCreatingCategory() {
@@ -144,5 +168,19 @@ public class CategoryServiceImplTest {
         assertThat(ex.getType(), is(CategoryServiceException.Type.CATEGORY_DOES_NOT_EXIST));
 
         verify(categoryRepositoryFacade, times(0)).updateCategories(Lists.newArrayList(category1, category2));
+    }
+
+    @DisplayName("should throw CategoryServiceException with code CANNOT_DELETE_PARENT_CATEGORY when deleting a list of categories and any of them is a parent category")
+    @Test
+    public void shouldThrowCannotDeleteParentCategory() {
+        List<Long> categoryIds = Lists.newArrayList(1L, 2L);
+
+        when(categoryRepositoryFacade.checkIfAnyCategoryHasSubCategories(categoryIds)).thenReturn(true);
+
+        CategoryServiceException ex = assertThrows(CategoryServiceException.class, () -> categoryService.deleteCategories(categoryIds, false));
+
+        assertThat(ex.getType(), is(CategoryServiceException.Type.CANNOT_DELETE_PARENT_CATEGORY));
+
+        verify(categoryRepositoryFacade, times(0)).deleteCategories(categoryIds);
     }
 }

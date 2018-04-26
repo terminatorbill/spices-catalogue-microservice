@@ -6,7 +6,9 @@ import javax.persistence.Persistence;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.spices.api.CategoryAdminApi;
 import com.spices.api.CategoryApi;
+import com.spices.api.exceptionmapper.CannotDeleteParentCategoryExceptionMapper;
 import com.spices.api.exceptionmapper.CategoryAlreadyExistsExceptionMapper;
 import com.spices.api.exceptionmapper.CategoryDoesNotExistsExceptionMapper;
 import com.spices.exceptionmapper.GenericExceptionMapper;
@@ -48,8 +50,10 @@ public class MainApp extends Application<AppConfiguration> {
     public void run(AppConfiguration configuration, Environment environment) {
         LOG.info("Registering REST resource classes");
         environment.jersey().getResourceConfig().register(CategoryApi.class);
+        environment.jersey().getResourceConfig().register(CategoryAdminApi.class);
         environment.jersey().getResourceConfig().register(CategoryAlreadyExistsExceptionMapper.class);
         environment.jersey().getResourceConfig().register(CategoryDoesNotExistsExceptionMapper.class);
+        environment.jersey().getResourceConfig().register(CannotDeleteParentCategoryExceptionMapper.class);
         environment.jersey().getResourceConfig().register(GenericExceptionMapper.class);
         environment.jersey().register(new JsonProcessingExceptionMapper(true));
 

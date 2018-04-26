@@ -1,17 +1,13 @@
 package com.spices.functional;
 
-import static com.spices.common.TestHelper.generateRandomString;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-import java.util.Collections;
-
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.core.MediaType;
 
-import org.assertj.core.util.Lists;
 import org.javalite.http.Http;
 import org.javalite.http.Post;
 import org.junit.jupiter.api.DisplayName;
@@ -21,10 +17,11 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.spices.api.dto.CategoryCreationRequestDto;
 import com.spices.api.dto.ErrorCodeDto;
 import com.spices.api.dto.ErrorDto;
+import com.spices.common.FunctionalTest;
 import com.spices.common.JsonHelper;
 import com.spices.common.TestHelper;
 
-public class CreateCategoryFunctionalTest {
+public class CreateCategoryFunctionalTest extends FunctionalTest {
 
     @DisplayName("should return 201 (CREATED) when creating one category without subcategories")
     @Test
@@ -104,38 +101,5 @@ public class CreateCategoryFunctionalTest {
         assertThat(errorDto.getUuid(), is(nullValue()));
         assertThat(errorDto.getDescription(), is(notNullValue()));
         assertThat(createCategoryResponse.headers().get("Content-Type").get(0), is(MediaType.APPLICATION_JSON));
-    }
-
-    private CategoryCreationRequestDto createRequestDtoWithSingleLevel() {
-        return new CategoryCreationRequestDto(
-            generateRandomString(6), generateRandomString(6), Collections.emptyList()
-        );
-    }
-
-    private CategoryCreationRequestDto createRequestDtoWithOneSubLevel() {
-        return new CategoryCreationRequestDto(
-            generateRandomString(6), generateRandomString(6), Lists.newArrayList(
-                new CategoryCreationRequestDto(
-                    generateRandomString(6), generateRandomString(6), Collections.emptyList()
-                ),
-                new CategoryCreationRequestDto(
-                    generateRandomString(6), generateRandomString(6), Collections.emptyList()
-                )
-        )
-        );
-    }
-
-    private CategoryCreationRequestDto createRequestDtoWithMultipleSubLevels() {
-        return new CategoryCreationRequestDto(
-            generateRandomString(6), generateRandomString(6), Lists.newArrayList(
-            new CategoryCreationRequestDto(generateRandomString(6), generateRandomString(6), Lists.newArrayList(
-                new CategoryCreationRequestDto(
-                    generateRandomString(6), generateRandomString(6), Lists.newArrayList(
-                        new CategoryCreationRequestDto(
-                            generateRandomString(6), generateRandomString(6), Collections.emptyList()
-                        ))
-                ))
-            )
-        ));
     }
 }

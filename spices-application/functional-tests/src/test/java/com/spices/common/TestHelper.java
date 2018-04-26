@@ -7,8 +7,8 @@ import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
 
 public final class TestHelper {
-    private static final String BASE_PATH = "http://localhost:8990/categories";
-    public static final String CATEGORIES_PATH = BASE_PATH;
+    public static final String CATEGORIES_PATH = "http://localhost:8990/categories";
+    public static final String ADMIN_CATEGORIES_PATH = "http://localhost:8990/admin/categories";
 
     private TestHelper() {
     }
