@@ -81,7 +81,7 @@ public class CategoryApi {
                             .map(String::trim)
                             .map(Long::parseLong)
                             .collect(Collectors.toList())
-            );
+            , false);
         } catch (CategoryServiceException e) {
             switch (e.getType()) {
                 case CANNOT_DELETE_PARENT_CATEGORY:

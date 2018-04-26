@@ -6,7 +6,9 @@ import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.Assert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.times;
@@ -138,7 +140,7 @@ public class CategoryApiTest {
 
         categoryApi.deleteCategories(categoryIds);
 
-        verify(categoryService, times(1)).deleteCategories(argumentCaptor.capture());
+        verify(categoryService, times(1)).deleteCategories(argumentCaptor.capture(), eq(false));
 
         List<Long> categories = argumentCaptor.getValue();
 
@@ -220,9 +222,9 @@ public class CategoryApiTest {
     public void shouldThrowCannotDeleteParentCategoryException() {
         String categoryIds = "1, 2,3";
 
-        doThrow(new CategoryServiceException("foo", CategoryServiceException.Type.CANNOT_DELETE_PARENT_CATEGORY)).when(categoryService).deleteCategories(anyList());
+        doThrow(new CategoryServiceException("foo", CategoryServiceException.Type.CANNOT_DELETE_PARENT_CATEGORY)).when(categoryService).deleteCategories(anyList(), eq(false));
 
         assertThrows(CannotDeleteParentCategoryException.class, () -> categoryApi.deleteCategories(categoryIds));
-        verify(categoryService, times(1)).deleteCategories(anyList());
+        verify(categoryService, times(1)).deleteCategories(anyList(), anyBoolean());
     }
 }

@@ -111,11 +111,22 @@ public class CategoryServiceImplTest {
     public void shouldDeleteAllProvidedCategories() {
         List<Long> categoryIds = Lists.newArrayList(1L, 2L);
 
-        categoryService.deleteCategories(categoryIds);
+        categoryService.deleteCategories(categoryIds, false);
 
         when(categoryRepositoryFacade.checkIfAnyCategoryHasSubCategories(categoryIds)).thenReturn(false);
 
         verify(categoryRepositoryFacade, times(1)).checkIfAnyCategoryHasSubCategories(categoryIds);
+        verify(categoryRepositoryFacade, times(1)).deleteCategories(categoryIds);
+    }
+
+    @DisplayName("should delete all the provided categories in case when any category has subcategories when the flag deleteParentCategories is set to true")
+    @Test
+    public void shouldDeleteAllProvidedCategoriesEvenWithSubCategories() {
+        List<Long> categoryIds = Lists.newArrayList(1L, 2L);
+
+        categoryService.deleteCategories(categoryIds, true);
+
+        verify(categoryRepositoryFacade, times(0)).checkIfAnyCategoryHasSubCategories(categoryIds);
         verify(categoryRepositoryFacade, times(1)).deleteCategories(categoryIds);
     }
 
@@ -166,7 +177,7 @@ public class CategoryServiceImplTest {
 
         when(categoryRepositoryFacade.checkIfAnyCategoryHasSubCategories(categoryIds)).thenReturn(true);
 
-        CategoryServiceException ex = assertThrows(CategoryServiceException.class, () -> categoryService.deleteCategories(categoryIds));
+        CategoryServiceException ex = assertThrows(CategoryServiceException.class, () -> categoryService.deleteCategories(categoryIds, false));
 
         assertThat(ex.getType(), is(CategoryServiceException.Type.CANNOT_DELETE_PARENT_CATEGORY));
 

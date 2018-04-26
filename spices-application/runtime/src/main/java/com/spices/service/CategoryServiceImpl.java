@@ -43,10 +43,12 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public void deleteCategories(List<Long> categoryIds) {
-        boolean someCategoryIsParent = checkIfAnyCategoryIsParent(categoryIds);
-        if (someCategoryIsParent) {
-            throw new CategoryServiceException("Cannot delete parent categories", CategoryServiceException.Type.CANNOT_DELETE_PARENT_CATEGORY);
+    public void deleteCategories(List<Long> categoryIds, boolean deleteParentCategories) {
+        if (!deleteParentCategories) {
+            boolean someCategoryIsParent = checkIfAnyCategoryIsParent(categoryIds);
+            if (someCategoryIsParent) {
+                throw new CategoryServiceException("Cannot delete parent categories", CategoryServiceException.Type.CANNOT_DELETE_PARENT_CATEGORY);
+            }
         }
         categoryRepositoryFacade.deleteCategories(categoryIds);
     }

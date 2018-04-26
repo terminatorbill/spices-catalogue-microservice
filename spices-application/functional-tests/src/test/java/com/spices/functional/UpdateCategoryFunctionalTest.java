@@ -30,8 +30,8 @@ public class UpdateCategoryFunctionalTest extends FunctionalTest {
     @DisplayName("should return 201 (CREATED) when updating one or more provided categories")
     @Test
     public void shouldUpdateCategories() {
-        createCategory();
-        createCategory();
+        createCategory(createRequestDtoWithSingleLevel());
+        createCategory(createRequestDtoWithSingleLevel());
 
         List<CategoryResponseDto> allCategories = getAllCategories();
 

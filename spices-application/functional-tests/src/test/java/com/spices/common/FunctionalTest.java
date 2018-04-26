@@ -18,6 +18,7 @@ import org.javalite.http.Get;
 import org.javalite.http.Http;
 import org.javalite.http.Post;
 import org.javalite.http.Put;
+import org.junit.jupiter.api.BeforeAll;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.spices.api.dto.CategoryCreationRequestDto;
@@ -25,22 +26,36 @@ import com.spices.api.dto.CategoryResponseDto;
 import com.spices.api.dto.CategoryUpdateRequestDto;
 
 public class FunctionalTest {
-    public void createCategory() {
-        CategoryCreationRequestDto categoryCreationRequestDto = createRequestDtoWithSingleLevel();
 
+    @BeforeAll
+    public static void setupAll() {
+        deleteCategories(getAllCategories().stream().map(CategoryResponseDto::getId).collect(Collectors.toList()), true);
+    }
+
+    public static void createCategory(CategoryCreationRequestDto categoryCreationRequestDto) {
         Post createCategoryResponse = Http.post(TestHelper.CATEGORIES_PATH, JsonHelper.toString(categoryCreationRequestDto))
                 .header("Content-Type", MediaType.APPLICATION_JSON);
 
         assertThat(createCategoryResponse.responseCode(), is(HttpServletResponse.SC_CREATED));
     }
 
-    public void deleteCategories(List<Long> categoryIds) {
-        Delete deleteCategoriesResponse = Http.delete(String.format(TestHelper.CATEGORIES_PATH + "?categoryIds=%s", categoryIds.stream().map(String::valueOf).collect(Collectors.joining(","))));
+    public static void deleteCategories(List<Long> categoryIds, boolean deleteParentCategories) {
+        if (categoryIds.isEmpty()) {
+            return;
+        }
+        String urlPath;
+        if (!deleteParentCategories) {
+            urlPath = TestHelper.CATEGORIES_PATH;
+        } else {
+            urlPath = TestHelper.ADMIN_CATEGORIES_PATH;
+        }
+
+        Delete deleteCategoriesResponse = Http.delete(String.format(urlPath + "?categoryIds=%s", categoryIds.stream().map(String::valueOf).collect(Collectors.joining(","))));
 
         assertThat(deleteCategoriesResponse.responseCode(), is(HttpServletResponse.SC_NO_CONTENT));
     }
 
-    public List<CategoryResponseDto> getAllCategories() {
+    public static List<CategoryResponseDto> getAllCategories() {
         Get allCategoriesResponse = Http.get(TestHelper.CATEGORIES_PATH)
                 .header("Content-Type", MediaType.APPLICATION_JSON);
 
@@ -53,20 +68,20 @@ public class FunctionalTest {
                 .collect(Collectors.toList());
     }
 
-    public void updateCategories(List<CategoryUpdateRequestDto> updateRequestDtos) {
+    public static void updateCategories(List<CategoryUpdateRequestDto> updateRequestDtos) {
         Put updateCategoriesResponse = Http.put(TestHelper.CATEGORIES_PATH, JsonHelper.toString(updateRequestDtos))
                 .header("Content-Type", MediaType.APPLICATION_JSON);
 
         assertThat(updateCategoriesResponse.responseCode(), is(HttpServletResponse.SC_CREATED));
     }
 
-    public CategoryCreationRequestDto createRequestDtoWithSingleLevel() {
+    public static CategoryCreationRequestDto createRequestDtoWithSingleLevel() {
         return new CategoryCreationRequestDto(
                 generateRandomString(6), generateRandomString(6), Collections.emptyList()
         );
     }
 
-    public CategoryCreationRequestDto createRequestDtoWithOneSubLevel() {
+    public static CategoryCreationRequestDto createRequestDtoWithOneSubLevel() {
         return new CategoryCreationRequestDto(
                 generateRandomString(6), generateRandomString(6), Lists.newArrayList(
                 new CategoryCreationRequestDto(
@@ -79,7 +94,7 @@ public class FunctionalTest {
         );
     }
 
-    public CategoryCreationRequestDto createRequestDtoWithMultipleSubLevels() {
+    public static CategoryCreationRequestDto createRequestDtoWithMultipleSubLevels() {
         return new CategoryCreationRequestDto(
                 generateRandomString(6), generateRandomString(6), Lists.newArrayList(
                 new CategoryCreationRequestDto(generateRandomString(6), generateRandomString(6), Lists.newArrayList(
