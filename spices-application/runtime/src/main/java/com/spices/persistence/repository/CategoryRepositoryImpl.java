@@ -11,7 +11,10 @@ public class CategoryRepositoryImpl implements CategoryRepository {
 
     @Override
     public void createCategory(Category category, EntityManager entityManager) {
-        CategoryEntity parentCategoryEntity = entityManager.find(CategoryEntity.class, category.getParentCategoryId());
+        CategoryEntity parentCategoryEntity = null;
+        if (category.getParentCategoryId() != null) {
+            parentCategoryEntity = entityManager.find(CategoryEntity.class, category.getParentCategoryId());
+        }
 
         CategoryEntity categoryEntity = createCategoryEntity(category, parentCategoryEntity);
         entityManager.persist(categoryEntity);

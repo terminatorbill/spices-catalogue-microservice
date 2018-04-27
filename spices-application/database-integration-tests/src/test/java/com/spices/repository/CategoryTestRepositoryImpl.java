@@ -24,7 +24,7 @@ public class CategoryTestRepositoryImpl implements CategoryTestRepository {
                     .getSingleResult();
 
             return new Category(
-                    categoryEntity.getCategoryId(), null, categoryEntity.getCategoryName(), categoryEntity.getCategoryDescription(), Collections.emptyList(), Collections.emptyList()
+                    categoryEntity.getCategoryId(), null, categoryEntity.getCategoryName(), categoryEntity.getCategoryDescription(), Collections.emptyList()
             );
         });
     }

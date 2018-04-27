@@ -3,6 +3,7 @@ package com.spices.integration;
 import static com.spices.common.TestHelpers.generateRandomString;
 
 import java.util.Collections;
+import java.util.List;
 
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
@@ -20,6 +21,8 @@ import com.spices.persistence.repository.CategoryRepositoryFacade;
 import com.spices.persistence.repository.CategoryRepositoryFacadeImpl;
 import com.spices.persistence.repository.CategoryRepositoryImpl;
 import com.spices.persistence.util.TransactionManager;
+import com.spices.repository.CategoryTestRepository;
+import com.spices.repository.CategoryTestRepositoryImpl;
 
 public class AddCategoryIntegrationTest {
     private static final EntityManagerFactory ENTITY_MANAGER_FACTORY = Persistence.createEntityManagerFactory("catalogueManager");
@@ -27,6 +30,7 @@ public class AddCategoryIntegrationTest {
     private final CategoryRepository categoryRepository = new CategoryRepositoryImpl();
     private final TransactionManager transactionManager = new TransactionManager(ENTITY_MANAGER_PROVIDER);
     private final CategoryRepositoryFacade categoryRepositoryFacade = new CategoryRepositoryFacadeImpl(categoryRepository, transactionManager);
+    private final CategoryTestRepository categoryTestRepository = new CategoryTestRepositoryImpl(transactionManager);
 
     @AfterAll
     public static void tearDown() {
@@ -35,50 +39,44 @@ public class AddCategoryIntegrationTest {
         }
     }
 
-    @DisplayName("should create a new category without subcategories")
+    @DisplayName("should create a new category")
     @Test
     public void shouldCreateNewCategory() {
         Category category = new Category(
-            null, null, generateRandomString(5), "Foo description", Collections.emptyList(), Collections.emptyList()
+            null, null, generateRandomString(5), "Foo description", Collections.emptyList()
         );
 
-        categoryRepositoryFacade.createCategories(category);
+        List<Category> categories = Lists.newArrayList(category);
+        categoryRepositoryFacade.createCategories(categories);
 
-        Assertions.assertThat(categoryRepositoryFacade.checkAndReturnAnyExistingCategory(category)).isNotEmpty();
+        Assertions.assertThat(categoryRepositoryFacade.checkAndReturnAnyExistingCategory(categories)).isNotEmpty();
     }
 
-    @DisplayName("should create a new category with one level of subcategories")
+    @DisplayName("should create 2 categories with one of them being a sub-category of another parent category")
     @Test
     public void shouldCreateNewCategoryWithOneLevelSubCategories() {
         Category category = new Category(
-            null, null, generateRandomString(5), "Foo description", Collections.emptyList(),
-                Lists.newArrayList(
-                    new Category(null, null, generateRandomString(5), "Bar description", Collections.emptyList(), Collections.emptyList())
-                )
+            null, null, generateRandomString(5), "Foo description", Collections.emptyList()
         );
 
-        categoryRepositoryFacade.createCategories(category);
+        List<Category> categories = Lists.newArrayList(category);
 
-        Assertions.assertThat(categoryRepositoryFacade.checkAndReturnAnyExistingCategory(category)).isNotEmpty();
-        Assertions.assertThat(categoryRepositoryFacade.checkAndReturnAnyExistingCategory(category.getSubCategories().get(0))).isNotEmpty();
-    }
+        categoryRepositoryFacade.createCategories(categories);
 
-    @DisplayName("should create a new category with two levels of subcategories")
-    @Test
-    public void shouldCreateNewCategoryWithTwoLevelsSubCategories() {
-        Category category = new Category(
-            null, null, generateRandomString(5), "Foo description", Collections.emptyList(),
-            Lists.newArrayList(
-                new Category(null, null, generateRandomString(5), "Bar description", Collections.emptyList(), Lists.newArrayList(
-                    new Category(null, null, generateRandomString(5), "Child Bar description", Collections.emptyList(), Collections.emptyList())
-                ))
-            )
+        Assertions.assertThat(categoryRepositoryFacade.checkAndReturnAnyExistingCategory(categories)).isNotEmpty();
+
+        Category subCategory = new Category(
+                null,
+                categoryTestRepository.getCategory(category.getName()).getId(),
+                generateRandomString(5),
+                generateRandomString(7),
+                Collections.emptyList()
         );
 
-        categoryRepositoryFacade.createCategories(category);
+        categories = Lists.newArrayList(subCategory);
 
-        Assertions.assertThat(categoryRepositoryFacade.checkAndReturnAnyExistingCategory(category)).isNotEmpty();
-        Assertions.assertThat(categoryRepositoryFacade.checkAndReturnAnyExistingCategory(category.getSubCategories().get(0))).isNotEmpty();
-        Assertions.assertThat(categoryRepositoryFacade.checkAndReturnAnyExistingCategory(category.getSubCategories().get(0).getSubCategories().get(0))).isNotEmpty();
+        categoryRepositoryFacade.createCategories(categories);
+
+        Assertions.assertThat(categoryRepositoryFacade.checkAndReturnAnyExistingCategory(categories)).isNotEmpty();
     }
 }
