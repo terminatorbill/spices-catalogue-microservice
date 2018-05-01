@@ -17,6 +17,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import com.spices.api.converter.CategoryCreationRequestToCategoryConverter;
+import com.spices.api.converter.CategoryUpdateRequestToCategoryConverter;
 import com.spices.api.dto.CategoryCreationRequestDto;
 import com.spices.api.dto.CategoryResponseDto;
 import com.spices.api.dto.CategoryUpdateRequestDto;
@@ -33,11 +34,16 @@ public class CategoryApi {
 
     private final CategoryService categoryService;
     private final CategoryCreationRequestToCategoryConverter toCategoryConverter;
+    private final CategoryUpdateRequestToCategoryConverter updateRequestToCategoryConverter;
 
     @Inject
-    public CategoryApi(CategoryService categoryService, CategoryCreationRequestToCategoryConverter toCategoryConverter) {
+    public CategoryApi(
+            CategoryService categoryService,
+            CategoryCreationRequestToCategoryConverter creationRequestToCategoryConverter,
+            CategoryUpdateRequestToCategoryConverter updateRequestToCategoryConverter) {
         this.categoryService = categoryService;
-        this.toCategoryConverter = toCategoryConverter;
+        this.toCategoryConverter = creationRequestToCategoryConverter;
+        this.updateRequestToCategoryConverter = updateRequestToCategoryConverter;
     }
 
     @POST
@@ -57,7 +63,7 @@ public class CategoryApi {
     @PUT
     public Response updateCategories(List<CategoryUpdateRequestDto> categoryUpdateRequestDtos) {
         try {
-            categoryService.updateCategories(toCategoryConverter.convert(categoryUpdateRequestDtos));
+            categoryService.updateCategories(updateRequestToCategoryConverter.convert(categoryUpdateRequestDtos));
             return Response.status(Response.Status.CREATED).build();
         } catch (CategoryServiceException e) {
             switch (e.getType()) {

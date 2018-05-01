@@ -6,12 +6,14 @@ import static org.hamcrest.collection.IsEmptyCollection.empty;
 import static org.hamcrest.core.Is.is;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
 import org.assertj.core.api.Assertions;
+import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -42,18 +44,18 @@ public class DeleteCategoryIntegrationTest {
     @Test
     public void shouldDeleteAllProvidedCategories() {
         Category category1 = new Category(
-                null, null, generateRandomString(5), "Foo description", Collections.emptyList(), Collections.emptyList()
+                null, null, generateRandomString(5), "Foo description", Collections.emptyList()
         );
 
         Category category2 = new Category(
-                null, null, generateRandomString(5), "Bar description", Collections.emptyList(), Collections.emptyList()
+                null, null, generateRandomString(5), "Bar description", Collections.emptyList()
         );
 
-        categoryRepositoryFacade.createCategory(category1);
-        categoryRepositoryFacade.createCategory(category2);
+        List<Category> categories = Lists.newArrayList(category1, category2);
 
-        Assertions.assertThat(categoryRepositoryFacade.checkAndReturnAnyExistingCategory(category1)).isNotEmpty();
-        Assertions.assertThat(categoryRepositoryFacade.checkAndReturnAnyExistingCategory(category2)).isNotEmpty();
+        categoryRepositoryFacade.createCategories(categories);
+
+        Assertions.assertThat(categoryRepositoryFacade.checkAndReturnAnyExistingCategory(categories)).isNotEmpty();
 
         categoryRepositoryFacade.deleteCategories(categoryRepositoryFacade.getCategories().stream().map(Category::getId).collect(Collectors.toList()));
 

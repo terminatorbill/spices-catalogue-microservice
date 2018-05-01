@@ -40,16 +40,13 @@ public class RetrieveCategoryIntegrationTest {
     @DisplayName("should retrieve all the persisted categories")
     @Test
     public void shouldRetrieveAllCategories() {
-        Category category = new Category(
-                null, null, generateRandomString(5), "Foo description", Collections.emptyList(),
-                Lists.newArrayList(
-                        new Category(null, null, generateRandomString(5), "Bar description", Collections.emptyList(), Lists.newArrayList(
-                                new Category(null, null, generateRandomString(5), "Child Bar description", Collections.emptyList(), Collections.emptyList())
-                        ))
-                )
+        List<Category> categories = Lists.newArrayList(
+                new Category(null, null, generateRandomString(5), generateRandomString(7), Collections.emptyList()),
+                new Category(null, null, generateRandomString(5), generateRandomString(7), Collections.emptyList()),
+                new Category(null, null, generateRandomString(5), generateRandomString(7), Collections.emptyList())
         );
 
-        categoryRepositoryFacade.createCategory(category);
+        categoryRepositoryFacade.createCategories(categories);
 
         List<Category> actualCategories = categoryRepositoryFacade.getCategories();
 

@@ -6,8 +6,8 @@ import java.util.Optional;
 import com.spices.domain.Category;
 
 public interface CategoryRepositoryFacade {
-    void createCategory(Category category);
-    Optional<String> checkAndReturnAnyExistingCategory(Category category);
+    void createCategories(List<Category> categories);
+    Optional<String> checkAndReturnAnyExistingCategory(List<Category> categories);
 
     boolean checkIfCategoryExists(Long categoryId);
 

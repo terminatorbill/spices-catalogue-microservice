@@ -5,44 +5,23 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import com.spices.api.dto.CategoryCreationRequestDto;
-import com.spices.api.dto.CategoryUpdateRequestDto;
+import com.spices.api.dto.CategoryRequestDto;
 import com.spices.domain.Category;
 
 public class CategoryCreationRequestToCategoryConverter {
 
-    public Category convert(CategoryCreationRequestDto categoryCreationRequestDto) {
-        return new Category(
-                null,
-                null,
-                categoryCreationRequestDto.getName(),
-                categoryCreationRequestDto.getDescription(),
-                Collections.emptyList(),
-                getSubCategories(categoryCreationRequestDto.getSubCategories())
-        );
-    }
-
-    public List<Category> convert(List<CategoryUpdateRequestDto> categoryUpdateRequestDtos) {
-        return categoryUpdateRequestDtos.stream()
+    public List<Category> convert(CategoryCreationRequestDto categoryCreationRequestDto) {
+        return categoryCreationRequestDto.getCategories().stream()
                 .map(this::convert)
                 .collect(Collectors.toList());
     }
 
-    private List<Category> getSubCategories(List<CategoryCreationRequestDto> subCategories) {
-        if (subCategories == null || subCategories.isEmpty()) {
-                return Collections.emptyList();
-        }
-        return subCategories.stream()
-                .map(this::convert)
-                .collect(Collectors.toList());
-    }
-
-    private Category convert(CategoryUpdateRequestDto categoryUpdateRequestDto) {
+    private Category convert(CategoryRequestDto categoryRequestDto) {
         return new Category(
-                categoryUpdateRequestDto.getId(),
                 null,
-                categoryUpdateRequestDto.getName(),
-                categoryUpdateRequestDto.getDescription(),
-                Collections.emptyList(),
+                categoryRequestDto.getParentCategoryId(),
+                categoryRequestDto.getName(),
+                categoryRequestDto.getDescription(),
                 Collections.emptyList()
         );
     }

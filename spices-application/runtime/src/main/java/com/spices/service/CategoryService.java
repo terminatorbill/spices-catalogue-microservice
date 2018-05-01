@@ -7,7 +7,7 @@ import com.spices.domain.Category;
 
 public interface CategoryService {
 
-    void createCategories(Category category);
+    void createCategories(List<Category> category);
 
     void updateCategories(List<Category> categories);
 

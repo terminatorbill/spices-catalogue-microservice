@@ -23,9 +23,9 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public void createCategories(Category category) {
-        checkIfAnyCategoryExists(category);
-        categoryRepositoryFacade.createCategory(category);
+    public void createCategories(List<Category> categories) {
+        checkIfAnyCategoryExists(categories);
+        categoryRepositoryFacade.createCategories(categories);
     }
 
     @Override
@@ -53,8 +53,8 @@ public class CategoryServiceImpl implements CategoryService {
         categoryRepositoryFacade.deleteCategories(categoryIds);
     }
 
-    private void checkIfAnyCategoryExists(Category category) {
-        categoryRepositoryFacade.checkAndReturnAnyExistingCategory(category).ifPresent(categoryName -> {
+    private void checkIfAnyCategoryExists(List<Category> categories) {
+        categoryRepositoryFacade.checkAndReturnAnyExistingCategory(categories).ifPresent(categoryName -> {
                 throw new CategoryServiceException(categoryName, CategoryServiceException.Type.DUPLICATE_CATEGORY);
         });
     }

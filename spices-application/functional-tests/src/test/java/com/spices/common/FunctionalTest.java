@@ -4,15 +4,14 @@ import static com.spices.common.TestHelper.generateRandomString;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.core.MediaType;
 
-import org.assertj.core.util.Lists;
 import org.javalite.http.Delete;
 import org.javalite.http.Get;
 import org.javalite.http.Http;
@@ -22,6 +21,7 @@ import org.junit.jupiter.api.BeforeAll;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.spices.api.dto.CategoryCreationRequestDto;
+import com.spices.api.dto.CategoryRequestDto;
 import com.spices.api.dto.CategoryResponseDto;
 import com.spices.api.dto.CategoryUpdateRequestDto;
 
@@ -32,7 +32,7 @@ public class FunctionalTest {
         deleteCategories(getAllCategories().stream().map(CategoryResponseDto::getId).collect(Collectors.toList()), true);
     }
 
-    public static void createCategory(CategoryCreationRequestDto categoryCreationRequestDto) {
+    public static void createCategories(CategoryCreationRequestDto categoryCreationRequestDto) {
         Post createCategoryResponse = Http.post(TestHelper.CATEGORIES_PATH, JsonHelper.toString(categoryCreationRequestDto))
                 .header("Content-Type", MediaType.APPLICATION_JSON);
 
@@ -75,36 +75,15 @@ public class FunctionalTest {
         assertThat(updateCategoriesResponse.responseCode(), is(HttpServletResponse.SC_CREATED));
     }
 
-    public static CategoryCreationRequestDto createRequestDtoWithSingleLevel() {
-        return new CategoryCreationRequestDto(
-                generateRandomString(6), generateRandomString(6), Collections.emptyList()
-        );
-    }
+    public static CategoryCreationRequestDto createCategoryCreationRequestDto(int totalCategories) {
+        List<CategoryRequestDto> categoriesToCreate = IntStream.range(0, totalCategories)
+                .boxed()
+                .map(c -> new CategoryRequestDto(generateRandomString(5), generateRandomString(10), null))
+                .collect(Collectors.toList());
 
-    public static CategoryCreationRequestDto createRequestDtoWithOneSubLevel() {
-        return new CategoryCreationRequestDto(
-                generateRandomString(6), generateRandomString(6), Lists.newArrayList(
-                new CategoryCreationRequestDto(
-                        generateRandomString(6), generateRandomString(6), Collections.emptyList()
-                ),
-                new CategoryCreationRequestDto(
-                        generateRandomString(6), generateRandomString(6), Collections.emptyList()
-                )
-        )
-        );
-    }
+        CategoryCreationRequestDto categoryCreationRequestDto = new CategoryCreationRequestDto();
+        categoryCreationRequestDto.setCategories(categoriesToCreate);
 
-    public static CategoryCreationRequestDto createRequestDtoWithMultipleSubLevels() {
-        return new CategoryCreationRequestDto(
-                generateRandomString(6), generateRandomString(6), Lists.newArrayList(
-                new CategoryCreationRequestDto(generateRandomString(6), generateRandomString(6), Lists.newArrayList(
-                        new CategoryCreationRequestDto(
-                                generateRandomString(6), generateRandomString(6), Lists.newArrayList(
-                                new CategoryCreationRequestDto(
-                                        generateRandomString(6), generateRandomString(6), Collections.emptyList()
-                                ))
-                        ))
-                )
-        ));
+        return categoryCreationRequestDto;
     }
 }
