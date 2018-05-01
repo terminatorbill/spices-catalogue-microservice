@@ -26,77 +26,32 @@ public class CreateCategoryFunctionalTest extends FunctionalTest {
     @DisplayName("should return 201 (CREATED) when creating one category without subcategories")
     @Test
     public void createRootCategoryOnly() {
-        CategoryCreationRequestDto categoryCreationRequestDto = createRequestDtoWithSingleLevel();
+        CategoryCreationRequestDto categoryCreationRequestDto = createCategoryCreationRequestDto(2);
 
         Post createCategoryResponse = Http.post(TestHelper.CATEGORIES_PATH, JsonHelper.toString(categoryCreationRequestDto))
-            .header("Content-Type", MediaType.APPLICATION_JSON);
+                .header("Content-Type", MediaType.APPLICATION_JSON);
 
         assertThat(createCategoryResponse.responseCode(), is(HttpServletResponse.SC_CREATED));
     }
 
-    @DisplayName("should return 201 (CREATED) when creating one category with one level of subcategories")
-    @Test
-    public void createCategoryWithOneSubLevel() {
-        CategoryCreationRequestDto categoryCreationRequestDto = createRequestDtoWithOneSubLevel();
-
-        Post createCategoryResponse = Http.post(TestHelper.CATEGORIES_PATH, JsonHelper.toString(categoryCreationRequestDto))
-            .header("Content-Type", MediaType.APPLICATION_JSON);
-
-        assertThat(createCategoryResponse.responseCode(), is(HttpServletResponse.SC_CREATED));
-    }
-
-    @DisplayName("should return 201 (CREATED) when creating one category with multiple levels of subcategories")
-    @Test
-    public void createCategoryWithMultipleSubLevels() {
-        CategoryCreationRequestDto categoryCreationRequestDto = createRequestDtoWithMultipleSubLevels();
-
-        Post createCategoryResponse = Http.post(TestHelper.CATEGORIES_PATH, JsonHelper.toString(categoryCreationRequestDto))
-            .header("Content-Type", MediaType.APPLICATION_JSON);
-
-        assertThat(createCategoryResponse.responseCode(), is(HttpServletResponse.SC_CREATED));
-    }
-
-    @DisplayName("should return 409 (CONFLICT) with code CATEGORY_ALREADY_EXISTS when creating one category with multiple levels of subcategories and any category exists")
+    @DisplayName("should return 409 (CONFLICT) with code CATEGORY_ALREADY_EXISTS when creating two categories with one them being a sub-category of another category and any category exists")
     @Test
     public void throwDuplicateCategory() {
-        CategoryCreationRequestDto categoryCreationRequestDto = createRequestDtoWithMultipleSubLevels();
+        CategoryCreationRequestDto categoryCreationRequestDto = createCategoryCreationRequestDto(2);
+
+        categoryCreationRequestDto.getCategories().get(0).setParentCategoryId(1L);
 
         Post createCategoryResponse = Http.post(TestHelper.CATEGORIES_PATH, JsonHelper.toString(categoryCreationRequestDto))
-            .header("Content-Type", MediaType.APPLICATION_JSON);
+                .header("Content-Type", MediaType.APPLICATION_JSON);
 
         assertThat(createCategoryResponse.responseCode(), is(HttpServletResponse.SC_CREATED));
 
-        //we try to resubmit the same query
-        createCategoryResponse = Http.post(TestHelper.CATEGORIES_PATH, JsonHelper.toString(categoryCreationRequestDto))
-            .header("Content-Type", MediaType.APPLICATION_JSON);
-
-        assertThat(createCategoryResponse.responseCode(), is(HttpServletResponse.SC_CONFLICT));
-        ErrorDto errorDto = JsonHelper.toObject(createCategoryResponse.text(), new TypeReference<ErrorDto>() {});
-        assertThat(errorDto.getErrorCode(), is(ErrorCodeDto.CATEGORY_ALREADY_EXISTS));
-        assertThat(errorDto.getUuid(), is(nullValue()));
-        assertThat(errorDto.getDescription(), is(notNullValue()));
-        assertThat(createCategoryResponse.headers().get("Content-Type").get(0), is(MediaType.APPLICATION_JSON));
-
-        //we change the root category name to assert that the first sublevel duplicate category will trigger the error
-        categoryCreationRequestDto.setName("123");
-        createCategoryResponse = Http.post(TestHelper.CATEGORIES_PATH, JsonHelper.toString(categoryCreationRequestDto))
-            .header("Content-Type", MediaType.APPLICATION_JSON);
-
-        assertThat(createCategoryResponse.responseCode(), is(HttpServletResponse.SC_CONFLICT));
-        errorDto = JsonHelper.toObject(createCategoryResponse.text(), new TypeReference<ErrorDto>() {});
-        assertThat(errorDto.getErrorCode(), is(ErrorCodeDto.CATEGORY_ALREADY_EXISTS));
-        assertThat(errorDto.getUuid(), is(nullValue()));
-        assertThat(errorDto.getDescription(), is(notNullValue()));
-        assertThat(createCategoryResponse.headers().get("Content-Type").get(0), is(MediaType.APPLICATION_JSON));
-
-        //we change the root category name and the first level category name to assert that the second sublevel duplicate category will trigger the error
-        categoryCreationRequestDto.setName("1234");
-        categoryCreationRequestDto.getSubCategories().get(0).setName("123456");
+        //We try to re-submit the last query
         createCategoryResponse = Http.post(TestHelper.CATEGORIES_PATH, JsonHelper.toString(categoryCreationRequestDto))
                 .header("Content-Type", MediaType.APPLICATION_JSON);
 
         assertThat(createCategoryResponse.responseCode(), is(HttpServletResponse.SC_CONFLICT));
-        errorDto = JsonHelper.toObject(createCategoryResponse.text(), new TypeReference<ErrorDto>() {});
+        ErrorDto errorDto = JsonHelper.toObject(createCategoryResponse.text(), new TypeReference<ErrorDto>() {});
         assertThat(errorDto.getErrorCode(), is(ErrorCodeDto.CATEGORY_ALREADY_EXISTS));
         assertThat(errorDto.getUuid(), is(nullValue()));
         assertThat(errorDto.getDescription(), is(notNullValue()));

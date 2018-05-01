@@ -17,6 +17,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.spices.api.dto.CategoryCreationRequestDto;
 import com.spices.api.dto.CategoryResponseDto;
 import com.spices.api.dto.ErrorCodeDto;
 import com.spices.api.dto.ErrorDto;
@@ -29,8 +30,7 @@ public class DeleteCategoryFunctionalTest extends FunctionalTest {
     @DisplayName("should return 204 (NO_CONTENT) when deleting all the provided categories and none of them has sub-categories")
     @Test
     public void shouldDeleteAllProvidedCategories() {
-        createCategory(createRequestDtoWithSingleLevel());
-        createCategory(createRequestDtoWithSingleLevel());
+        createCategories(createCategoryCreationRequestDto(2));
 
         deleteCategories(getAllCategories().stream().map(CategoryResponseDto::getId).collect(Collectors.toList()), false);
     }
@@ -38,10 +38,16 @@ public class DeleteCategoryFunctionalTest extends FunctionalTest {
     @DisplayName("should return 403 (FORBIDDEN) with code CANNOT_DELETE_PARENT_CATEGORY when any of the provided categories to delete has sub-categories")
     @Test
     public void shouldReturnCannotDeleteParentCategory() {
-        createCategory(createRequestDtoWithMultipleSubLevels());
-        createCategory(createRequestDtoWithSingleLevel());
+        createCategories(createCategoryCreationRequestDto(2));
 
         List<Long> categoryIds = getAllCategories().stream().map(CategoryResponseDto::getId).collect(Collectors.toList());
+
+        CategoryCreationRequestDto categoryCreationRequestDto = createCategoryCreationRequestDto(1);
+        categoryCreationRequestDto.getCategories().get(0).setParentCategoryId(categoryIds.get(0));
+
+        createCategories(categoryCreationRequestDto);
+
+        categoryIds = getAllCategories().stream().map(CategoryResponseDto::getId).collect(Collectors.toList());
 
         Delete deleteCategoriesResponse = Http.delete(String.format(TestHelper.CATEGORIES_PATH + "?categoryIds=%s", categoryIds.stream().map(String::valueOf).collect(Collectors.joining(","))));
 

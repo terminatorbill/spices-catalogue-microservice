@@ -24,6 +24,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 
 import com.spices.api.converter.CategoryCreationRequestToCategoryConverter;
+import com.spices.api.converter.CategoryUpdateRequestToCategoryConverter;
 import com.spices.api.dto.CategoryCreationRequestDto;
 import com.spices.api.dto.CategoryRequestDto;
 import com.spices.api.dto.CategoryResponseDto;
@@ -37,8 +38,9 @@ import com.spices.service.exception.CategoryServiceException;
 
 public class CategoryApiTest {
     private final CategoryService categoryService = Mockito.mock(CategoryService.class);
-    private final CategoryCreationRequestToCategoryConverter toCategoryConverter = new CategoryCreationRequestToCategoryConverter();
-    private final CategoryApi categoryApi = new CategoryApi(categoryService, toCategoryConverter);
+    private final CategoryCreationRequestToCategoryConverter creationRequestToCategoryConverter = new CategoryCreationRequestToCategoryConverter();
+    private final CategoryUpdateRequestToCategoryConverter updateRequestToCategoryConverter = new CategoryUpdateRequestToCategoryConverter();
+    private final CategoryApi categoryApi = new CategoryApi(categoryService, creationRequestToCategoryConverter, updateRequestToCategoryConverter);
 
     @DisplayName("should create a new category without a parent category and return a 201 Response")
     @Test
