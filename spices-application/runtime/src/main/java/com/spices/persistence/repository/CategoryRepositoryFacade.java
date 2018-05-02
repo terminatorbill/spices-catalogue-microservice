@@ -7,7 +7,10 @@ import com.spices.domain.Category;
 
 public interface CategoryRepositoryFacade {
     void createCategories(List<Category> categories);
+
     Optional<String> checkAndReturnAnyExistingCategory(List<Category> categories);
+
+    Optional<Long> doesAnyCategoryDoesNotExist(List<Long> categories);
 
     boolean checkIfCategoryExists(Long categoryId);
 
