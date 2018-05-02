@@ -2,17 +2,17 @@ package com.spices.api.dto;
 
 import java.util.List;
 
-public class ProductDto {
+public class ProductRequestDto {
     private String name;
     private String description;
     private List<Long> categories;
     private Long price;
     private MediaDto mediaDto;
 
-    public ProductDto() {
+    public ProductRequestDto() {
     }
 
-    public ProductDto(String name, String description, List<Long> categories, Long price, MediaDto mediaDto) {
+    public ProductRequestDto(String name, String description, List<Long> categories, Long price, MediaDto mediaDto) {
         this.name = name;
         this.description = description;
         this.categories = categories;

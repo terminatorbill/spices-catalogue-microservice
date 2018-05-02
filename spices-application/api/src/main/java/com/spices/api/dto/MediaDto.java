@@ -1,6 +1,8 @@
 package com.spices.api.dto;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 public class MediaDto {
     private List<ImageDto> images;
@@ -10,8 +12,8 @@ public class MediaDto {
     }
 
     public MediaDto(List<ImageDto> images, List<VideoDto> videos) {
-        this.images = images;
-        this.videos = videos;
+        this.images = Optional.ofNullable(images).orElse(Collections.emptyList());
+        this.videos = Optional.ofNullable(videos).orElse(Collections.emptyList());
     }
 
     public List<ImageDto> getImages() {

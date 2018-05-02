@@ -1,5 +1,7 @@
 package com.spices.domain;
 
+import java.util.Objects;
+
 public class Video {
     private final Long id;
     private final String url;
@@ -27,5 +29,20 @@ public class Video {
 
     public String getFormat() {
         return format;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Video)) return false;
+        Video video = (Video) o;
+        return Objects.equals(name, video.name) &&
+                Objects.equals(format, video.format);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(name, format);
     }
 }
