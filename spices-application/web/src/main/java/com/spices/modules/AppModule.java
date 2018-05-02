@@ -11,6 +11,8 @@ import com.spices.api.converter.CategoryUpdateRequestToCategoryConverter;
 import com.spices.api.converter.ProductRequestDtoToProductConverter;
 import com.spices.service.CategoryService;
 import com.spices.service.CategoryServiceImpl;
+import com.spices.service.ProductService;
+import com.spices.service.ProductServiceImpl;
 
 public class AppModule extends AbstractModule {
 
@@ -29,6 +31,8 @@ public class AppModule extends AbstractModule {
                 .to(CategoryServiceImpl.class)
                 .in(Singleton.class);
 
-
+        bind(ProductService.class)
+                .to(ProductServiceImpl.class)
+                .in(Singleton.class);
     }
 }
