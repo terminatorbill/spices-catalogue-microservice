@@ -4,6 +4,9 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.nullValue;
 import static org.hamcrest.core.Is.is;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
@@ -23,8 +26,11 @@ import com.spices.api.dto.ImageDto;
 import com.spices.api.dto.MediaDto;
 import com.spices.api.dto.ProductRequestDto;
 import com.spices.api.dto.VideoDto;
+import com.spices.api.exception.CategoryDoesNotExistsException;
+import com.spices.api.exception.ProductAlreadyExistsException;
 import com.spices.domain.Product;
 import com.spices.service.ProductService;
+import com.spices.service.exception.ProductServiceException;
 
 public class ProductApiTest {
     private final ProductService productService = Mockito.mock(ProductService.class);
@@ -47,6 +53,26 @@ public class ProductApiTest {
         verifyCreatedProducts(products, productsToBeCreated);
 
         assertThat(response.getStatus(), is(Response.Status.CREATED.getStatusCode()));
+    }
+
+    @DisplayName("should throw CategoryDoesNotExistsException when any category in the provided products does not exist")
+    @Test
+    public void shouldReturnCategoryDoesNotExist() {
+        List<ProductRequestDto> products = createProducts();
+
+        doThrow(new ProductServiceException("foo", ProductServiceException.Type.CATEGORY_DOES_NOT_EXIST)).when(productService).createProducts(anyList());
+
+        assertThrows(CategoryDoesNotExistsException.class, () -> productApi.createProducts(products));
+    }
+
+    @DisplayName("should throw ProductAlreadyExistsException when any of the provided products already exist")
+    @Test
+    public void shouldReturnProductAlreadyExists() {
+        List<ProductRequestDto> products = createProducts();
+
+        doThrow(new ProductServiceException("foo", ProductServiceException.Type.PRODUCT_ALREADY_EXISTS)).when(productService).createProducts(anyList());
+
+        assertThrows(ProductAlreadyExistsException.class, () -> productApi.createProducts(products));
     }
 
     private static void verifyCreatedProducts(List<ProductRequestDto> products, List<Product> productsToBeCreated) {
