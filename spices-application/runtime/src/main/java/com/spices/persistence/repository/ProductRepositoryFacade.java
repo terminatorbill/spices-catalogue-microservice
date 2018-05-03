@@ -8,7 +8,5 @@ import com.spices.domain.Product;
 public interface ProductRepositoryFacade {
     void createProducts(List<Product> products);
 
-    Optional<String> doesAnyProductAlreadyExists(List<Product> products);
-
-    Optional<Long> doesAnyCategoryDoesNotExist(List<Product> products);
+    Optional<String> isThereAnyProductThatAlreadyExists(List<Product> products);
 }

@@ -44,6 +44,17 @@ public class ProductEntity {
     @Column(name = "product_price")
     private Long productPrice;
 
+    public ProductEntity() {
+    }
+
+    public ProductEntity(Long productId, Set<CategoryEntity> categories, String productName, String productDescription, Long productPrice) {
+        this.productId = productId;
+        this.categories = categories;
+        this.productName = productName;
+        this.productDescription = productDescription;
+        this.productPrice = productPrice;
+    }
+
     public Long getProductId() {
         return productId;
     }

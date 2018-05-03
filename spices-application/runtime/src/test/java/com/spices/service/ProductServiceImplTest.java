@@ -44,7 +44,7 @@ public class ProductServiceImplTest {
     public void shouldThrowProductAlreadyExists() {
         List<Product> products = createProducts();
 
-        when(productRepositoryFacade.doesAnyProductAlreadyExists(products)).thenReturn(Optional.of(products.get(0).getName()));
+        when(productRepositoryFacade.isThereAnyProductThatAlreadyExists(products)).thenReturn(Optional.of(products.get(0).getName()));
 
         ProductServiceException productServiceException = assertThrows(ProductServiceException.class, () -> productService.createProducts(products));
 
@@ -58,7 +58,7 @@ public class ProductServiceImplTest {
         List<Product> products = createProducts();
 
         List<Long> categories = products.stream().flatMap(product -> product.getCategories().stream()).collect(Collectors.toList());
-        when(categoryRepositoryFacade.doesAnyCategoryDoesNotExist(categories)).thenReturn(Optional.of(products.get(0).getCategories().get(0)));
+        when(categoryRepositoryFacade.isThereACategoryThatDoesNotExist(categories)).thenReturn(Optional.of(products.get(0).getCategories().get(0)));
 
         ProductServiceException productServiceException = assertThrows(ProductServiceException.class, () -> productService.createProducts(products));
 

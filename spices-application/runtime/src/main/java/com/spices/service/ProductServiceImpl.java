@@ -27,7 +27,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     private void checkIfAnyProductAlreadyExists(List<Product> products) {
-        Optional<String> productAlreadyExists = productRepositoryFacade.doesAnyProductAlreadyExists(products);
+        Optional<String> productAlreadyExists = productRepositoryFacade.isThereAnyProductThatAlreadyExists(products);
         if (productAlreadyExists.isPresent()) {
             throw new ProductServiceException(productAlreadyExists.get(), ProductServiceException.Type.PRODUCT_ALREADY_EXISTS);
         }
@@ -35,7 +35,7 @@ public class ProductServiceImpl implements ProductService {
 
     private void checkIfAnyCategoryDoesNotExist(List<Product> products) {
         List<Long> categories = products.stream().flatMap(product -> product.getCategories().stream()).collect(Collectors.toList());
-        Optional<Long> categoryDoesNotExist = categoryRepositoryFacade.doesAnyCategoryDoesNotExist(categories);
+        Optional<Long> categoryDoesNotExist = categoryRepositoryFacade.isThereACategoryThatDoesNotExist(categories);
         if (categoryDoesNotExist.isPresent()) {
             throw new ProductServiceException(categoryDoesNotExist.get().toString(), ProductServiceException.Type.CATEGORY_DOES_NOT_EXIST);
         }

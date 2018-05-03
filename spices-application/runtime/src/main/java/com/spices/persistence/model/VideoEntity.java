@@ -40,6 +40,14 @@ public class VideoEntity {
     public VideoEntity() {
     }
 
+    public VideoEntity(Long videoId, String url, String name, String format, ProductEntity product) {
+        this.videoId = videoId;
+        this.url = url;
+        this.name = name;
+        this.format = format;
+        this.product = product;
+    }
+
     public Long getVideoId() {
         return videoId;
     }

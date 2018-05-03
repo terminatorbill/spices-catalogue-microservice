@@ -43,6 +43,15 @@ public class ImageEntity {
     public ImageEntity() {
     }
 
+    public ImageEntity(Long imageId, String url, String name, String format, String caption, ProductEntity product) {
+        this.imageId = imageId;
+        this.url = url;
+        this.name = name;
+        this.format = format;
+        this.caption = caption;
+        this.product = product;
+    }
+
     public Long getImageId() {
         return imageId;
     }

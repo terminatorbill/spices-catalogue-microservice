@@ -10,7 +10,7 @@ public interface CategoryRepositoryFacade {
 
     Optional<String> checkAndReturnAnyExistingCategory(List<Category> categories);
 
-    Optional<Long> doesAnyCategoryDoesNotExist(List<Long> categories);
+    Optional<Long> isThereACategoryThatDoesNotExist(List<Long> categories);
 
     boolean checkIfCategoryExists(Long categoryId);
 
