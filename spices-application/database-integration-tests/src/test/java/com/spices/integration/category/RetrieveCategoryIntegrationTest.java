@@ -1,4 +1,4 @@
-package com.spices.integration;
+package com.spices.integration.category;
 
 import static com.spices.common.TestHelpers.generateRandomString;
 import static org.hamcrest.CoreMatchers.is;

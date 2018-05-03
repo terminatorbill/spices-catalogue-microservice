@@ -32,7 +32,7 @@ public class ProductRepositoryImpl implements ProductRepository {
 
     @Override
     public boolean checkIfProductAlreadyExists(String productName, EntityManager entityManager) {
-        long results = entityManager.createQuery("SELECT COUNT(p) FROM Product p WHERE p.productName = :productName", Long.class)
+        long results = entityManager.createQuery("SELECT COUNT(p) FROM ProductEntity p WHERE p.productName = :productName", Long.class)
                 .setParameter("productName", productName)
                 .getSingleResult();
 
