@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import com.spices.api.dto.ProductResponseDto;
 import com.spices.domain.Product;
 import com.spices.persistence.repository.CategoryRepositoryFacade;
 import com.spices.persistence.repository.ProductRepositoryFacade;
@@ -24,6 +25,11 @@ public class ProductServiceImpl implements ProductService {
         checkIfAnyProductAlreadyExists(products);
         checkIfAnyCategoryDoesNotExist(products);
         productRepositoryFacade.createProducts(products);
+    }
+
+    @Override
+    public List<ProductResponseDto> retrieveProducts(int page, int pageSize) {
+        return null;
     }
 
     private void checkIfAnyProductAlreadyExists(List<Product> products) {

@@ -4,15 +4,22 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.hibernate.validator.constraints.NotEmpty;
+
 import com.spices.api.converter.ProductRequestDtoToProductConverter;
 import com.spices.api.dto.ProductRequestDto;
+import com.spices.api.dto.ProductResponseDto;
 import com.spices.api.exception.CategoryDoesNotExistsException;
 import com.spices.api.exception.ProductAlreadyExistsException;
 import com.spices.domain.Product;
@@ -52,5 +59,10 @@ public class ProductApi {
                     throw new IllegalStateException();
             }
         }
+    }
+
+    @GET
+    public List<ProductResponseDto> retrieveProducts(@QueryParam("page-number") @NotNull @Min(0) Integer page, @QueryParam("page-size") @NotNull @Min(1) Integer pageSize) {
+        return productService.retrieveProducts(page, pageSize);
     }
 }

@@ -4,11 +4,13 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.nullValue;
 import static org.hamcrest.core.Is.is;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +27,7 @@ import com.spices.api.converter.ProductRequestDtoToProductConverter;
 import com.spices.api.dto.ImageDto;
 import com.spices.api.dto.MediaDto;
 import com.spices.api.dto.ProductRequestDto;
+import com.spices.api.dto.ProductResponseDto;
 import com.spices.api.dto.VideoDto;
 import com.spices.api.exception.CategoryDoesNotExistsException;
 import com.spices.api.exception.ProductAlreadyExistsException;
@@ -53,6 +56,47 @@ public class ProductApiTest {
         verifyCreatedProducts(products, productsToBeCreated);
 
         assertThat(response.getStatus(), is(Response.Status.CREATED.getStatusCode()));
+    }
+
+    @DisplayName("should return at most the products for the requested page and page size")
+    @Test
+    public void shouldReturnTheRequestedProducts() {
+        List<ProductResponseDto> expectedProducts = Lists.newArrayList(
+                new ProductResponseDto(
+                        1L,
+                        "foo",
+                        "foo description",
+                        Lists.newArrayList(1L, 2L),
+                        10000L,
+                        null
+                ),
+                new ProductResponseDto(
+                        2L,
+                        "bar",
+                        "bar description",
+                        Lists.newArrayList(1L),
+                        50000L,
+                        new MediaDto(
+                                Lists.newArrayList(
+                                        new ImageDto("http://", "foo", "png", null)
+                                ),
+                                Lists.newArrayList(
+                                        new VideoDto("http://", "foo", "mp4")
+                                )
+                        )
+                )
+        );
+
+        int page = 1;
+        int pageSize = 10;
+
+        when(productService.retrieveProducts(page, pageSize)).thenReturn(expectedProducts);
+
+        List<ProductResponseDto> actualProducts = productApi.retrieveProducts(page, pageSize);
+
+        assertEquals(actualProducts.size(), expectedProducts.size());
+        assertThat(actualProducts.get(0), is(expectedProducts.get(0)));
+        assertThat(actualProducts.get(1), is(expectedProducts.get(1)));
     }
 
     @DisplayName("should throw CategoryDoesNotExistsException when any category in the provided products does not exist")
