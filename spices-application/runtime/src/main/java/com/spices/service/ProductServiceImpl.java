@@ -4,7 +4,11 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import com.spices.api.dto.ImageResponseDto;
+import com.spices.api.dto.MediaResponseDto;
 import com.spices.api.dto.ProductResponseDto;
+import com.spices.api.dto.VideoResponseDto;
+import com.spices.domain.Media;
 import com.spices.domain.Product;
 import com.spices.persistence.repository.CategoryRepositoryFacade;
 import com.spices.persistence.repository.ProductRepositoryFacade;
@@ -29,7 +33,10 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public List<ProductResponseDto> retrieveProducts(int page, int pageSize) {
-        return null;
+        List<Product> products = productRepositoryFacade.retrieveProducts(page, pageSize);
+        return products.stream()
+                .map(ProductServiceImpl::convertToProductResponseDto)
+                .collect(Collectors.toList());
     }
 
     private void checkIfAnyProductAlreadyExists(List<Product> products) {
@@ -45,5 +52,23 @@ public class ProductServiceImpl implements ProductService {
         if (categoryDoesNotExist.isPresent()) {
             throw new ProductServiceException(categoryDoesNotExist.get().toString(), ProductServiceException.Type.CATEGORY_DOES_NOT_EXIST);
         }
+    }
+
+    private static ProductResponseDto convertToProductResponseDto(Product product) {
+        return new ProductResponseDto(
+                product.getId(),
+                product.getName(),
+                product.getDescription(),
+                product.getCategories(),
+                product.getPrice(),
+                convertToMediaResponseDto(product.getMedia())
+        );
+    }
+
+    private static MediaResponseDto convertToMediaResponseDto(Media media) {
+        return new MediaResponseDto(
+                media.getImages().stream().map(image -> new ImageResponseDto(image.getId(), image.getUrl(), image.getName(), image.getFormat(), image.getCaption())).collect(Collectors.toList()),
+                media.getVideos().stream().map(video -> new VideoResponseDto(video.getId(), video.getUrl(), video.getName(), video.getFormat())).collect(Collectors.toList())
+        );
     }
 }

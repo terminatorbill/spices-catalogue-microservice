@@ -1,17 +1,19 @@
 package com.spices.api.dto;
 
-public class VideoDto {
+public class ImageRequestDto {
     private String url;
     private String name;
     private String format;
+    private String caption;
 
-    public VideoDto() {
+    public ImageRequestDto() {
     }
 
-    public VideoDto(String url, String name, String format) {
+    public ImageRequestDto(String url, String name, String format, String caption) {
         this.url = url;
         this.name = name;
         this.format = format;
+        this.caption = caption;
     }
 
     public String getUrl() {
@@ -26,6 +28,10 @@ public class VideoDto {
         return format;
     }
 
+    public String getCaption() {
+        return caption;
+    }
+
     public void setUrl(String url) {
         this.url = url;
     }
@@ -36,5 +42,9 @@ public class VideoDto {
 
     public void setFormat(String format) {
         this.format = format;
+    }
+
+    public void setCaption(String caption) {
+        this.caption = caption;
     }
 }

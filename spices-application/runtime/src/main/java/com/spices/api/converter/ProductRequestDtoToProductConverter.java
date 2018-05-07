@@ -3,10 +3,10 @@ package com.spices.api.converter;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.spices.api.dto.ImageDto;
-import com.spices.api.dto.MediaDto;
+import com.spices.api.dto.ImageRequestDto;
+import com.spices.api.dto.MediaRequestDto;
 import com.spices.api.dto.ProductRequestDto;
-import com.spices.api.dto.VideoDto;
+import com.spices.api.dto.VideoRequestDto;
 import com.spices.domain.Image;
 import com.spices.domain.Media;
 import com.spices.domain.Product;
@@ -21,49 +21,49 @@ public class ProductRequestDtoToProductConverter {
                 productRequestDto.getDescription(),
                 productRequestDto.getCategories(),
                 productRequestDto.getPrice(),
-                convertMedia(productRequestDto.getMediaDto())
+                convertMedia(productRequestDto.getMediaRequestDto())
         );
     }
 
-    private Media convertMedia(MediaDto mediaDto) {
-        if (mediaDto == null) {
+    private Media convertMedia(MediaRequestDto mediaRequestDto) {
+        if (mediaRequestDto == null) {
             return new Media(null, null);
         }
 
         return new Media(
-                getImages(mediaDto.getImages()),
-                getVideo(mediaDto.getVideos())
+                getImages(mediaRequestDto.getImages()),
+                getVideo(mediaRequestDto.getVideos())
         );
     }
 
-    private List<Image> getImages(List<ImageDto> images) {
+    private List<Image> getImages(List<ImageRequestDto> images) {
         return images.stream()
                 .map(this::getImage)
                 .collect(Collectors.toList());
     }
 
-    private Image getImage(ImageDto imageDto) {
+    private Image getImage(ImageRequestDto imageRequestDto) {
         return new Image(
                 null,
-                imageDto.getUrl(),
-                imageDto.getName(),
-                imageDto.getFormat(),
-                imageDto.getCaption()
+                imageRequestDto.getUrl(),
+                imageRequestDto.getName(),
+                imageRequestDto.getFormat(),
+                imageRequestDto.getCaption()
         );
     }
 
-    private List<Video> getVideo(List<VideoDto> videos) {
+    private List<Video> getVideo(List<VideoRequestDto> videos) {
         return videos.stream()
                 .map(this::getVideo)
                 .collect(Collectors.toList());
     }
 
-    private Video getVideo(VideoDto videoDto) {
+    private Video getVideo(VideoRequestDto videoRequestDto) {
         return new Video(
                 null,
-                videoDto.getUrl(),
-                videoDto.getName(),
-                videoDto.getFormat()
+                videoRequestDto.getUrl(),
+                videoRequestDto.getName(),
+                videoRequestDto.getFormat()
         );
     }
 }

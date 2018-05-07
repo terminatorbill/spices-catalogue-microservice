@@ -24,11 +24,14 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 
 import com.spices.api.converter.ProductRequestDtoToProductConverter;
-import com.spices.api.dto.ImageDto;
-import com.spices.api.dto.MediaDto;
+import com.spices.api.dto.ImageRequestDto;
+import com.spices.api.dto.ImageResponseDto;
+import com.spices.api.dto.MediaRequestDto;
+import com.spices.api.dto.MediaResponseDto;
 import com.spices.api.dto.ProductRequestDto;
 import com.spices.api.dto.ProductResponseDto;
-import com.spices.api.dto.VideoDto;
+import com.spices.api.dto.VideoRequestDto;
+import com.spices.api.dto.VideoResponseDto;
 import com.spices.api.exception.CategoryDoesNotExistsException;
 import com.spices.api.exception.ProductAlreadyExistsException;
 import com.spices.domain.Product;
@@ -60,7 +63,7 @@ public class ProductApiTest {
 
     @DisplayName("should return at most the products for the requested page and page size")
     @Test
-    public void shouldReturnTheRequestedProducts() {
+    public void shouldReturnAtMostTheRequestedProducts() {
         List<ProductResponseDto> expectedProducts = Lists.newArrayList(
                 new ProductResponseDto(
                         1L,
@@ -76,12 +79,12 @@ public class ProductApiTest {
                         "bar description",
                         Lists.newArrayList(1L),
                         50000L,
-                        new MediaDto(
+                        new MediaResponseDto(
                                 Lists.newArrayList(
-                                        new ImageDto("http://", "foo", "png", null)
+                                        new ImageResponseDto(1L, "http://", "foo", "png", null)
                                 ),
                                 Lists.newArrayList(
-                                        new VideoDto("http://", "foo", "mp4")
+                                        new VideoResponseDto(1L, "http://", "foo", "mp4")
                                 )
                         )
                 )
@@ -136,15 +139,15 @@ public class ProductApiTest {
         assertThat(productsToBeCreated.get(1).getCategories(), is(products.get(1).getCategories()));
         assertThat(productsToBeCreated.get(1).getMedia().getImages().size(), is(1));
         assertThat(productsToBeCreated.get(1).getMedia().getImages().get(0).getId(), is(nullValue()));
-        assertThat(productsToBeCreated.get(1).getMedia().getImages().get(0).getName(), is(products.get(1).getMediaDto().getImages().get(0).getName()));
-        assertThat(productsToBeCreated.get(1).getMedia().getImages().get(0).getUrl(), is(products.get(1).getMediaDto().getImages().get(0).getUrl()));
-        assertThat(productsToBeCreated.get(1).getMedia().getImages().get(0).getFormat(), is(products.get(1).getMediaDto().getImages().get(0).getFormat()));
-        assertThat(productsToBeCreated.get(1).getMedia().getImages().get(0).getCaption(), is(products.get(1).getMediaDto().getImages().get(0).getCaption()));
+        assertThat(productsToBeCreated.get(1).getMedia().getImages().get(0).getName(), is(products.get(1).getMediaRequestDto().getImages().get(0).getName()));
+        assertThat(productsToBeCreated.get(1).getMedia().getImages().get(0).getUrl(), is(products.get(1).getMediaRequestDto().getImages().get(0).getUrl()));
+        assertThat(productsToBeCreated.get(1).getMedia().getImages().get(0).getFormat(), is(products.get(1).getMediaRequestDto().getImages().get(0).getFormat()));
+        assertThat(productsToBeCreated.get(1).getMedia().getImages().get(0).getCaption(), is(products.get(1).getMediaRequestDto().getImages().get(0).getCaption()));
         assertThat(productsToBeCreated.get(1).getMedia().getVideos().size(), is(1));
         assertThat(productsToBeCreated.get(1).getMedia().getVideos().get(0).getId(), is(nullValue()));
-        assertThat(productsToBeCreated.get(1).getMedia().getVideos().get(0).getName(), is(products.get(1).getMediaDto().getVideos().get(0).getName()));
-        assertThat(productsToBeCreated.get(1).getMedia().getVideos().get(0).getFormat(), is(products.get(1).getMediaDto().getVideos().get(0).getFormat()));
-        assertThat(productsToBeCreated.get(1).getMedia().getVideos().get(0).getUrl(), is(products.get(1).getMediaDto().getVideos().get(0).getUrl()));
+        assertThat(productsToBeCreated.get(1).getMedia().getVideos().get(0).getName(), is(products.get(1).getMediaRequestDto().getVideos().get(0).getName()));
+        assertThat(productsToBeCreated.get(1).getMedia().getVideos().get(0).getFormat(), is(products.get(1).getMediaRequestDto().getVideos().get(0).getFormat()));
+        assertThat(productsToBeCreated.get(1).getMedia().getVideos().get(0).getUrl(), is(products.get(1).getMediaRequestDto().getVideos().get(0).getUrl()));
     }
 
     private static ArrayList<ProductRequestDto> createProducts() {
@@ -161,12 +164,12 @@ public class ProductApiTest {
                         "bar description",
                         Lists.newArrayList(1L, 2L),
                         500000L,
-                        new MediaDto(
+                        new MediaRequestDto(
                                 Lists.newArrayList(
-                                        new ImageDto("http://", "foo", "png", null)
+                                        new ImageRequestDto("http://", "foo", "png", null)
                                 ),
                                 Lists.newArrayList(
-                                        new VideoDto("http://", "foo", "mp4")
+                                        new VideoRequestDto("http://", "foo", "mp4")
                                 )
                         )
                 )

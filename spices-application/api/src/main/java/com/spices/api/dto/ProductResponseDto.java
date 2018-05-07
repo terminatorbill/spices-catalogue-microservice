@@ -8,7 +8,7 @@ public class ProductResponseDto {
     private String description;
     private List<Long> categories;
     private Long price;
-    private MediaDto mediaDto;
+    private MediaResponseDto media;
 
     public ProductResponseDto() {
     }
@@ -19,13 +19,13 @@ public class ProductResponseDto {
             String description,
             List<Long> categories,
             Long price,
-            MediaDto mediaDto) {
+            MediaResponseDto media) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.categories = categories;
         this.price = price;
-        this.mediaDto = mediaDto;
+        this.media = media;
     }
 
     public Long getId() {
@@ -48,7 +48,7 @@ public class ProductResponseDto {
         return price;
     }
 
-    public MediaDto getMediaDto() {
-        return mediaDto;
+    public MediaResponseDto getMedia() {
+        return media;
     }
 }
