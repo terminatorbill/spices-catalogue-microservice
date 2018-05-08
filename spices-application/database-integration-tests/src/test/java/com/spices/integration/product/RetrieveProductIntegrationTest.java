@@ -1,6 +1,12 @@
 package com.spices.integration.product;
 
 import static com.spices.common.TestHelpers.generateRandomString;
+import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.containsInAnyOrder;
+import static org.hamcrest.Matchers.empty;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 
 import java.util.Collections;
@@ -12,6 +18,7 @@ import javax.persistence.Persistence;
 
 import org.assertj.core.api.Assertions;
 import org.assertj.core.util.Lists;
+import org.junit.Before;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -48,6 +55,11 @@ public class RetrieveProductIntegrationTest {
         }
     }
 
+    @Before
+    public void beforeEachTest() {
+        productRepositoryFacade.deleteProducts();
+    }
+
     //TODO: Make it work when delete is implemented
     @DisplayName("should retrieve at most the products for the given page size and page number")
     @Test
@@ -60,6 +72,50 @@ public class RetrieveProductIntegrationTest {
         int pageSize = 10;
 
         List<Product> products = productRepositoryFacade.retrieveProducts(pageNumber, pageSize);
+
+        assertThat(products.size(), is(3));
+
+        assertThat(products.get(0).getId(), is(notNullValue()));
+        assertThat(products.get(0).getPrice(), is(1000L));
+        assertThat(products.get(0).getName(), is(notNullValue()));
+        assertThat(products.get(0).getDescription(), is(notNullValue()));
+        assertThat(products.get(0).getCategories(), containsInAnyOrder(categoryIds.toArray(new Long[0])));
+        assertThat(products.get(0).getMedia().getImages(), is(empty()));
+        assertThat(products.get(0).getMedia().getVideos(), is(empty()));
+
+        assertThat(products.get(1).getId(), is(notNullValue()));
+        assertThat(products.get(1).getPrice(), is(5000L));
+        assertThat(products.get(1).getName(), is(notNullValue()));
+        assertThat(products.get(1).getDescription(), is(notNullValue()));
+        assertThat(products.get(1).getCategories(), containsInAnyOrder(categoryIds.toArray(new Long[0])));
+        assertThat(products.get(1).getMedia().getImages().size(), is(1));
+        assertThat(products.get(1).getMedia().getImages().get(0).getId(), is(notNullValue()));
+        assertThat(products.get(1).getMedia().getImages().get(0).getUrl(), is("http://"));
+        assertThat(products.get(1).getMedia().getImages().get(0).getName(), is(notNullValue()));
+        assertThat(products.get(1).getMedia().getImages().get(0).getFormat(), is("png"));
+        assertThat(products.get(1).getMedia().getImages().get(0).getCaption(), is(notNullValue()));
+        assertThat(products.get(1).getMedia().getVideos().size(), is(1));
+        assertThat(products.get(1).getMedia().getVideos().get(0).getId(), is(notNullValue()));
+        assertThat(products.get(1).getMedia().getVideos().get(0).getUrl(), is("http://"));
+        assertThat(products.get(1).getMedia().getVideos().get(0).getName(), is(notNullValue()));
+        assertThat(products.get(1).getMedia().getVideos().get(0).getFormat(), is("mp4"));
+
+        assertThat(products.get(2).getId(), is(notNullValue()));
+        assertThat(products.get(2).getPrice(), is(5000L));
+        assertThat(products.get(2).getName(), is(notNullValue()));
+        assertThat(products.get(2).getDescription(), is(notNullValue()));
+        assertThat(products.get(2).getCategories(), containsInAnyOrder(categoryIds.toArray(new Long[0])));
+        assertThat(products.get(2).getMedia().getImages().size(), is(1));
+        assertThat(products.get(2).getMedia().getImages().get(0).getId(), is(notNullValue()));
+        assertThat(products.get(2).getMedia().getImages().get(0).getUrl(), is("http://"));
+        assertThat(products.get(2).getMedia().getImages().get(0).getName(), is(notNullValue()));
+        assertThat(products.get(2).getMedia().getImages().get(0).getFormat(), is("png"));
+        assertThat(products.get(2).getMedia().getImages().get(0).getCaption(), is(notNullValue()));
+        assertThat(products.get(2).getMedia().getVideos().size(), is(1));
+        assertThat(products.get(2).getMedia().getVideos().get(0).getId(), is(notNullValue()));
+        assertThat(products.get(2).getMedia().getVideos().get(0).getUrl(), is("http://"));
+        assertThat(products.get(2).getMedia().getVideos().get(0).getName(), is(notNullValue()));
+        assertThat(products.get(2).getMedia().getVideos().get(0).getFormat(), is("mp4"));
     }
 
     private void createCategories() {
