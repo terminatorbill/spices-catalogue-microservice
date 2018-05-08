@@ -1,6 +1,7 @@
 package com.spices.persistence.model;
 
-import com.google.common.collect.Sets;
+import java.util.Objects;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -12,10 +13,11 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
-import java.util.Objects;
-import java.util.Set;
+
+import com.google.common.collect.Sets;
 
 @Entity
 @Table(name = "product")
@@ -44,15 +46,32 @@ public class ProductEntity {
     @Column(name = "product_price")
     private Long productPrice;
 
+    @OneToMany(mappedBy = "product", fetch = FetchType.EAGER, orphanRemoval = true, cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
+    @Column(name = "images")
+    private Set<ImageEntity> images = Sets.newHashSet();
+
+    @OneToMany(mappedBy = "product", fetch = FetchType.EAGER, orphanRemoval = true, cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
+    @Column(name = "video")
+    private Set<VideoEntity> video = Sets.newHashSet();
+
     public ProductEntity() {
     }
 
-    public ProductEntity(Long productId, Set<CategoryEntity> categories, String productName, String productDescription, Long productPrice) {
+    public ProductEntity(
+            Long productId,
+            Set<CategoryEntity> categories,
+            String productName,
+            String productDescription,
+            Long productPrice,
+            Set<ImageEntity> images,
+            Set<VideoEntity> video) {
         this.productId = productId;
         this.categories = categories;
         this.productName = productName;
         this.productDescription = productDescription;
         this.productPrice = productPrice;
+        this.images = images;
+        this.video = video;
     }
 
     public Long getProductId() {
@@ -93,6 +112,32 @@ public class ProductEntity {
 
     public void setProductPrice(Long productPrice) {
         this.productPrice = productPrice;
+    }
+
+    public Set<ImageEntity> getImages() {
+        return images;
+    }
+
+    public void addImages(Set<ImageEntity> images) {
+        images.forEach(this::addImage);
+    }
+
+    public void addVideo(Set<VideoEntity> video) {
+        video.forEach(this::addVideo);
+    }
+
+    public void addImage(ImageEntity image) {
+        images.add(image);
+        image.setProduct(this);
+    }
+
+    public Set<VideoEntity> getVideo() {
+        return video;
+    }
+
+    public void addVideo(VideoEntity video) {
+        this.video.add(video);
+        video.setProduct(this);
     }
 
     @Override

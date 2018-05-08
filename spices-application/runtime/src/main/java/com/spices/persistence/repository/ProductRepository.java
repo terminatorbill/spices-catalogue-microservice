@@ -10,4 +10,6 @@ public interface ProductRepository {
     void createProducts(List<Product> products, EntityManager entityManager);
 
     boolean checkIfProductAlreadyExists(String productName, EntityManager entityManager);
+
+    List<Product> retrieveProducts(Integer pageNumber, Integer pageSize, EntityManager entityManager);
 }

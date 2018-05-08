@@ -102,6 +102,14 @@ public class ProductApiTest {
         assertThat(actualProducts.get(1), is(expectedProducts.get(1)));
     }
 
+    @DisplayName("should delete all the products")
+    @Test
+    public void shouldDeleteAllTheProducts() {
+        productApi.deleteProducts();
+
+        verify(productService, times(1)).deleteProducts();
+    }
+
     @DisplayName("should throw CategoryDoesNotExistsException when any category in the provided products does not exist")
     @Test
     public void shouldReturnCategoryDoesNotExist() {

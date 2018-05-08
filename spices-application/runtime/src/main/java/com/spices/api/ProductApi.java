@@ -7,6 +7,7 @@ import javax.inject.Inject;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -64,5 +65,10 @@ public class ProductApi {
     @GET
     public List<ProductResponseDto> retrieveProducts(@QueryParam("page-number") @NotNull @Min(0) Integer page, @QueryParam("page-size") @NotNull @Min(1) Integer pageSize) {
         return productService.retrieveProducts(page, pageSize);
+    }
+
+    @DELETE
+    public void deleteProducts() {
+        productService.deleteProducts();
     }
 }

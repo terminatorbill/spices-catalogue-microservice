@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import javax.inject.Inject;
+
 import com.spices.api.dto.ImageResponseDto;
 import com.spices.api.dto.MediaResponseDto;
 import com.spices.api.dto.ProductResponseDto;
@@ -19,6 +21,7 @@ public class ProductServiceImpl implements ProductService {
     private final ProductRepositoryFacade productRepositoryFacade;
     private final CategoryRepositoryFacade categoryRepositoryFacade;
 
+    @Inject
     public ProductServiceImpl(ProductRepositoryFacade productRepositoryFacade, CategoryRepositoryFacade categoryRepositoryFacade) {
         this.productRepositoryFacade = productRepositoryFacade;
         this.categoryRepositoryFacade = categoryRepositoryFacade;
@@ -37,6 +40,11 @@ public class ProductServiceImpl implements ProductService {
         return products.stream()
                 .map(ProductServiceImpl::convertToProductResponseDto)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public void deleteProducts() {
+
     }
 
     private void checkIfAnyProductAlreadyExists(List<Product> products) {

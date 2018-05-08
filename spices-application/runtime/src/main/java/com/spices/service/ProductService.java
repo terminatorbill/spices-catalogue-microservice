@@ -9,4 +9,6 @@ public interface ProductService {
     void createProducts(List<Product> products);
 
     List<ProductResponseDto> retrieveProducts(int page, int pageSize);
+
+    void deleteProducts();
 }

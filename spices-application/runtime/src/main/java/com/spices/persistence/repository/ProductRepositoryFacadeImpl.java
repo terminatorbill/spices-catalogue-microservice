@@ -39,7 +39,7 @@ public class ProductRepositoryFacadeImpl implements ProductRepositoryFacade {
 
     @Override
     public List<Product> retrieveProducts(Integer pageNumber, Integer pageSize) {
-        return null;
+        return transactionManager.doInJPAWithoutTransaction(entityManager -> productRepository.retrieveProducts(pageNumber, pageSize, entityManager));
     }
 
     private boolean doesProductAlreadyExists(String productName) {
