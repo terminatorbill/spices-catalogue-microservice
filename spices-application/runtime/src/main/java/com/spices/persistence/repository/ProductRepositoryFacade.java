@@ -12,4 +12,6 @@ public interface ProductRepositoryFacade {
     Optional<String> isThereAnyProductThatAlreadyExists(List<Product> products);
 
     List<Product> retrieveProducts(Integer pageNumber, Integer pageSize);
+
+    void deleteProducts();
 }

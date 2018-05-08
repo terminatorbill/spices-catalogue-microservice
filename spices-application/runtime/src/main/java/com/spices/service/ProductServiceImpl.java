@@ -44,7 +44,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public void deleteProducts() {
-
+        productRepositoryFacade.deleteProducts();
     }
 
     private void checkIfAnyProductAlreadyExists(List<Product> products) {

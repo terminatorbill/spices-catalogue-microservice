@@ -82,6 +82,14 @@ public class ProductServiceImplTest {
         verify(productRepositoryFacade, times(1)).retrieveProducts(pageNumber, pageSize);
     }
 
+    @DisplayName("should delete all products")
+    @Test
+    public void shouldDeleteAllProducts() {
+        productService.deleteProducts();
+
+        verify(productRepositoryFacade, times(1)).deleteProducts();
+    }
+
     @DisplayName("should throw ProductServiceException with code PRODUCT_ALREADY_EXISTS when any of the provided products already exists")
     @Test
     public void shouldThrowProductAlreadyExists() {

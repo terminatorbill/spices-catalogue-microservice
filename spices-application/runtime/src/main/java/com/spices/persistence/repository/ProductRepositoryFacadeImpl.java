@@ -42,6 +42,11 @@ public class ProductRepositoryFacadeImpl implements ProductRepositoryFacade {
         return transactionManager.doInJPAWithoutTransaction(entityManager -> productRepository.retrieveProducts(pageNumber, pageSize, entityManager));
     }
 
+    @Override
+    public void deleteProducts() {
+
+    }
+
     private boolean doesProductAlreadyExists(String productName) {
         return transactionManager.doInJPAWithoutTransaction(entityManager -> productRepository.checkIfProductAlreadyExists(productName, entityManager));
     }
