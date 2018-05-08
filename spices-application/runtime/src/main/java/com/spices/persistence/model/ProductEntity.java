@@ -1,5 +1,6 @@
 package com.spices.persistence.model;
 
+import java.util.Iterator;
 import java.util.Objects;
 import java.util.Set;
 
@@ -14,6 +15,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
+import javax.persistence.PreRemove;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
@@ -129,6 +131,25 @@ public class ProductEntity {
     public void addImage(ImageEntity image) {
         images.add(image);
         image.setProduct(this);
+    }
+
+    @PreRemove
+    public void removeImagesAndVideo() {
+        Iterator<ImageEntity> imageIterator = images.iterator();
+
+        while (imageIterator.hasNext()) {
+            ImageEntity imageEntity = imageIterator.next();
+            imageEntity.setProduct(null);
+            imageIterator.remove();
+        }
+
+        Iterator<VideoEntity> videoIterator = video.iterator();
+
+        while (videoIterator.hasNext()) {
+            VideoEntity videoEntity = videoIterator.next();
+            videoEntity.setProduct(null);
+            videoIterator.remove();
+        }
     }
 
     public Set<VideoEntity> getVideo() {

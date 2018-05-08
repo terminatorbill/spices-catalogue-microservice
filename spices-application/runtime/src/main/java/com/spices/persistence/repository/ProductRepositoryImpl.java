@@ -65,8 +65,11 @@ public class ProductRepositoryImpl implements ProductRepository {
 
     @Override
     public void deleteProducts(EntityManager entityManager) {
-        entityManager.createQuery("DELETE FROM ProductEntity p")
-                .executeUpdate();
+        List<ProductEntity> products = entityManager.createQuery("SELECT p FROM ProductEntity p", ProductEntity.class)
+                .getResultList();
+
+        products.forEach(entityManager::remove);
+
     }
 
     private static Set<CategoryEntity> getCategories(Product product, EntityManager entityManager) {
