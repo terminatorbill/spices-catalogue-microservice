@@ -12,4 +12,6 @@ public interface ProductRepository {
     boolean checkIfProductAlreadyExists(String productName, EntityManager entityManager);
 
     List<Product> retrieveProducts(Integer pageNumber, Integer pageSize, EntityManager entityManager);
+
+    void deleteProducts(EntityManager entityManager);
 }

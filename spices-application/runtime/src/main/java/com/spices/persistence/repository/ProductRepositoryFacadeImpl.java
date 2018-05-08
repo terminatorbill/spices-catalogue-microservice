@@ -44,7 +44,7 @@ public class ProductRepositoryFacadeImpl implements ProductRepositoryFacade {
 
     @Override
     public void deleteProducts() {
-
+        transactionManager.doInJPA(productRepository::deleteProducts);
     }
 
     private boolean doesProductAlreadyExists(String productName) {

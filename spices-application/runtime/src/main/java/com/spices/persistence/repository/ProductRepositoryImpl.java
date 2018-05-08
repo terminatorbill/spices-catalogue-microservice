@@ -63,6 +63,12 @@ public class ProductRepositoryImpl implements ProductRepository {
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public void deleteProducts(EntityManager entityManager) {
+        entityManager.createQuery("DELETE FROM ProductEntity p")
+                .executeUpdate();
+    }
+
     private static Set<CategoryEntity> getCategories(Product product, EntityManager entityManager) {
         return product.getCategories().stream()
                 .map(categoryId -> entityManager.find(CategoryEntity.class, categoryId))
