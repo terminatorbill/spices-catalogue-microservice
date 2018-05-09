@@ -1,9 +1,13 @@
-package com.spices.integration;
+package com.spices.integration.category;
 
 import static com.spices.common.TestHelpers.generateRandomString;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.collection.IsEmptyCollection.empty;
+import static org.hamcrest.core.Is.is;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
@@ -21,16 +25,13 @@ import com.spices.persistence.repository.CategoryRepositoryFacade;
 import com.spices.persistence.repository.CategoryRepositoryFacadeImpl;
 import com.spices.persistence.repository.CategoryRepositoryImpl;
 import com.spices.persistence.util.TransactionManager;
-import com.spices.repository.CategoryTestRepository;
-import com.spices.repository.CategoryTestRepositoryImpl;
 
-public class AddCategoryIntegrationTest {
+public class DeleteCategoryIntegrationTest {
     private static final EntityManagerFactory ENTITY_MANAGER_FACTORY = Persistence.createEntityManagerFactory("catalogueManager");
     private static final EntityManagerProvider ENTITY_MANAGER_PROVIDER = new EntityManagerProvider(ENTITY_MANAGER_FACTORY);
     private final CategoryRepository categoryRepository = new CategoryRepositoryImpl();
     private final TransactionManager transactionManager = new TransactionManager(ENTITY_MANAGER_PROVIDER);
     private final CategoryRepositoryFacade categoryRepositoryFacade = new CategoryRepositoryFacadeImpl(categoryRepository, transactionManager);
-    private final CategoryTestRepository categoryTestRepository = new CategoryTestRepositoryImpl(transactionManager);
 
     @AfterAll
     public static void tearDown() {
@@ -39,44 +40,25 @@ public class AddCategoryIntegrationTest {
         }
     }
 
-    @DisplayName("should create a new category")
+    @DisplayName("should delete all the provided categories")
     @Test
-    public void shouldCreateNewCategory() {
-        Category category = new Category(
-            null, null, generateRandomString(5), "Foo description", Collections.emptyList()
+    public void shouldDeleteAllProvidedCategories() {
+        Category category1 = new Category(
+                null, null, generateRandomString(5), "Foo description", Collections.emptyList()
         );
 
-        List<Category> categories = Lists.newArrayList(category);
-        categoryRepositoryFacade.createCategories(categories);
-
-        Assertions.assertThat(categoryRepositoryFacade.checkAndReturnAnyExistingCategory(categories)).isNotEmpty();
-    }
-
-    @DisplayName("should create 2 categories with one of them being a sub-category of another parent category")
-    @Test
-    public void shouldCreateNewCategoryWithOneLevelSubCategories() {
-        Category category = new Category(
-            null, null, generateRandomString(5), "Foo description", Collections.emptyList()
+        Category category2 = new Category(
+                null, null, generateRandomString(5), "Bar description", Collections.emptyList()
         );
 
-        List<Category> categories = Lists.newArrayList(category);
+        List<Category> categories = Lists.newArrayList(category1, category2);
 
         categoryRepositoryFacade.createCategories(categories);
 
         Assertions.assertThat(categoryRepositoryFacade.checkAndReturnAnyExistingCategory(categories)).isNotEmpty();
 
-        Category subCategory = new Category(
-                null,
-                categoryTestRepository.getCategory(category.getName()).getId(),
-                generateRandomString(5),
-                generateRandomString(7),
-                Collections.emptyList()
-        );
+        categoryRepositoryFacade.deleteCategories(categoryRepositoryFacade.getCategories().stream().map(Category::getId).collect(Collectors.toList()));
 
-        categories = Lists.newArrayList(subCategory);
-
-        categoryRepositoryFacade.createCategories(categories);
-
-        Assertions.assertThat(categoryRepositoryFacade.checkAndReturnAnyExistingCategory(categories)).isNotEmpty();
+        assertThat(categoryRepositoryFacade.getCategories(), is(empty()));
     }
 }

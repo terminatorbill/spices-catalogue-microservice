@@ -2,22 +2,22 @@ package com.spices.api.dto;
 
 import java.util.List;
 
-public class ProductDto {
+public class ProductRequestDto {
     private String name;
     private String description;
     private List<Long> categories;
     private Long price;
-    private MediaDto mediaDto;
+    private MediaRequestDto mediaRequestDto;
 
-    public ProductDto() {
+    public ProductRequestDto() {
     }
 
-    public ProductDto(String name, String description, List<Long> categories, Long price, MediaDto mediaDto) {
+    public ProductRequestDto(String name, String description, List<Long> categories, Long price, MediaRequestDto mediaRequestDto) {
         this.name = name;
         this.description = description;
         this.categories = categories;
         this.price = price;
-        this.mediaDto = mediaDto;
+        this.mediaRequestDto = mediaRequestDto;
     }
 
     public String getName() {
@@ -36,8 +36,8 @@ public class ProductDto {
         return price;
     }
 
-    public MediaDto getMediaDto() {
-        return mediaDto;
+    public MediaRequestDto getMediaRequestDto() {
+        return mediaRequestDto;
     }
 
     public void setName(String name) {
@@ -56,7 +56,7 @@ public class ProductDto {
         this.price = price;
     }
 
-    public void setMediaDto(MediaDto mediaDto) {
-        this.mediaDto = mediaDto;
+    public void setMediaRequestDto(MediaRequestDto mediaRequestDto) {
+        this.mediaRequestDto = mediaRequestDto;
     }
 }

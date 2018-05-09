@@ -1,5 +1,7 @@
 package com.spices.domain;
 
+import java.util.Objects;
+
 public class Image {
     private final Long id;
     private final String url;
@@ -33,5 +35,20 @@ public class Image {
 
     public String getCaption() {
         return caption;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Image)) return false;
+        Image image = (Image) o;
+        return Objects.equals(name, image.name) &&
+                Objects.equals(format, image.format);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(name, format);
     }
 }

@@ -2,6 +2,7 @@ package com.spices.persistence.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -36,11 +37,20 @@ public class ImageEntity {
     @Column(name = "image_caption")
     private String caption;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id")
     private ProductEntity product;
 
     public ImageEntity() {
+    }
+
+    public ImageEntity(Long imageId, String url, String name, String format, String caption, ProductEntity product) {
+        this.imageId = imageId;
+        this.url = url;
+        this.name = name;
+        this.format = format;
+        this.caption = caption;
+        this.product = product;
     }
 
     public Long getImageId() {

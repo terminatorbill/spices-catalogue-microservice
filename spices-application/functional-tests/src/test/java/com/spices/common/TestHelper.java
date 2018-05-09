@@ -2,6 +2,7 @@ package com.spices.common;
 
 import java.io.IOException;
 import java.security.SecureRandom;
+import java.util.Random;
 
 import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
@@ -9,6 +10,7 @@ import com.google.common.io.Resources;
 public final class TestHelper {
     public static final String CATEGORIES_PATH = "http://localhost:8990/categories";
     public static final String ADMIN_CATEGORIES_PATH = "http://localhost:8990/admin/categories";
+    public static final String PRODUCTS_PATH = "http://localhost:8990/products";
 
     private TestHelper() {
     }
@@ -32,5 +34,11 @@ public final class TestHelper {
         }
 
         return sb.toString();
+    }
+
+    public static Long generateRandomNumber(int bound) {
+        Random rnd = new Random();
+
+        return (long) rnd.nextInt(bound) + 1;
     }
 }

@@ -42,6 +42,14 @@ public class CategoryRepositoryFacadeImpl implements CategoryRepositoryFacade {
     }
 
     @Override
+    public Optional<Long> isThereACategoryThatDoesNotExist(List<Long> categories) {
+        return transactionManager.doInJPAWithoutTransaction(entityManager -> categories.stream()
+                .filter(c -> !checkIfCategoryExists(c, entityManager))
+                .findFirst()
+        );
+    }
+
+    @Override
     public boolean checkIfCategoryExists(Long categoryId) {
         return transactionManager.doInJPAWithoutTransaction(entityManager -> checkIfCategoryExists(categoryId, entityManager));
     }
