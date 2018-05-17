@@ -1,10 +1,10 @@
 server:
   applicationConnectors:
     - type: http
-      port: 8990
+      port: ${HTTP_PORT}
   adminConnectors:
     - type: http
-      port: 8991
+      port: ${HTTP_ADMIN_PORT}
 
 # Logging settings.
 logging:
@@ -20,7 +20,7 @@ logging:
 
     # Redirects SQL logs to a separate file
     org.hibernate.SQL:
-      level: DEBUG
+      level: ${HIBERNATE_DEBUG_LEVEL}
 
 # Logback's Time Based Rolling Policy - archivedLogFilenamePattern: /tmp/application-%d{yyyy-MM-dd}.log.gz
 # Logback's Size and Time Based Rolling Policy -  archivedLogFilenamePattern: /tmp/application-%d{yyyy-MM-dd}-%i.log.gz
@@ -36,3 +36,15 @@ logging:
       archivedFileCount: 7
       timeZone: UTC
       maxFileSize: 10MB
+
+hibernate:
+  persistenceUnit: ${PERSISTENCE_UNIT}
+  jdbcDriver: ${JDBC_DRIVER}
+  jdbcUrl: ${JDBC_URL}
+  jdbcUser: ${JDBC_USER}
+  jdbcPassword: ${JDBC_PASSWORD}
+  hibernateDialect: ${HIBERNATE_DIALECT}
+  hbmAuto: ${HBM_AUTO}
+  showSql: ${SHOW_SQL}
+  formatSql: ${FORMAT_SQL}
+  flushMode: ${FLUSH_MODE}

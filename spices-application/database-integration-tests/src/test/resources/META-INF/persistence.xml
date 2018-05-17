@@ -8,8 +8,7 @@
         <class>com.spices.persistence.model.CategoryEntity</class>
         <class>com.spices.persistence.model.ImageEntity</class>
         <class>com.spices.persistence.model.ProductEntity</class>
-        <class>com.spices.persistence.model.VideoEntity
-        </class>
+        <class>com.spices.persistence.model.VideoEntity</class>
         <properties>
             <property name="javax.persistence.jdbc.driver" value="org.postgresql.Driver" /> <!-- DB Driver -->
             <property name="javax.persistence.jdbc.url" value="jdbc:postgresql://localhost/catalogue" /> <!-- DB Name -->
