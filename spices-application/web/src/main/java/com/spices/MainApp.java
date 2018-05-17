@@ -1,4 +1,4 @@
-package com.spices.configuration;
+package com.spices;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,6 +10,7 @@ import com.spices.api.exceptionmapper.CannotDeleteParentCategoryExceptionMapper;
 import com.spices.api.exceptionmapper.CategoryAlreadyExistsExceptionMapper;
 import com.spices.api.exceptionmapper.CategoryDoesNotExistsExceptionMapper;
 import com.spices.api.exceptionmapper.ProductAlreadyExistsExceptionMapper;
+import com.spices.configuration.AppConfiguration;
 import com.spices.exceptionmapper.GenericExceptionMapper;
 import com.spices.modules.AppModule;
 import com.spices.modules.PersistentModule;

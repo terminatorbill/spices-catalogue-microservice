@@ -33,7 +33,7 @@
             <configuration>
               <transformers>
                 <transformer>
-                  <mainClass>com.spices.configuration.MainApp</mainClass>
+                  <mainClass>com.spices.MainApp</mainClass>
                 </transformer>
                 <transformer />
               </transformers>
