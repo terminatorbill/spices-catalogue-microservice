@@ -33,7 +33,7 @@
             <configuration>
               <transformers>
                 <transformer>
-                  <mainClass>com.spices.configuration.MainApp</mainClass>
+                  <mainClass>com.spices.MainApp</mainClass>
                 </transformer>
                 <transformer />
               </transformers>
@@ -129,10 +129,6 @@
       <version>2.15.0</version>
       <scope>test</scope>
       <exclusions>
-        <exclusion>
-          <artifactId>byte-buddy</artifactId>
-          <groupId>net.bytebuddy</groupId>
-        </exclusion>
         <exclusion>
           <artifactId>byte-buddy-agent</artifactId>
           <groupId>net.bytebuddy</groupId>
